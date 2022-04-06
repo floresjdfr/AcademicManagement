@@ -2,6 +2,7 @@ CREATE OR ALTER PROCEDURE udpInsertCareer(@Code AS VARCHAR(50), @CareerName as V
 AS
 BEGIN
     INSERT INTO [dbo].Career VALUES (@Code, @CareerName, @DegreeName);
+    SELECT SCOPE_IDENTITY();
 END
 
 CREATE OR ALTER PROCEDURE udpModifyCareer(@Pk_Career AS INT, @Code AS VARCHAR(50), @CareerName as VARCHAR(50), @DegreeName as VARCHAR(50))
