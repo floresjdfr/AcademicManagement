@@ -3,7 +3,6 @@ AS
 BEGIN
     INSERT INTO [dbo].Career VALUES (@Code, @CareerName, @DegreeName);
 END
-GO
 
 CREATE OR ALTER PROCEDURE udpModifyCareer(@Pk_Career AS INT, @Code AS VARCHAR(50), @CareerName as VARCHAR(50), @DegreeName as VARCHAR(50))
 AS
@@ -17,26 +16,17 @@ BEGIN
     WHERE
         Pk_Career = @Pk_Career;
 END
-GO
 
 CREATE OR ALTER PROCEDURE udpFindCareer(@Pk_Career AS INT = NULL, @Code AS VARCHAR(50) = NULL, @CareerName as VARCHAR(50) = NULL, @DegreeName as VARCHAR(50) = NULL)
 AS
 BEGIN
-	IF (@Pk_Career IS NOT NULL)
-		SELECT * FROM [dbo].Career WHERE Pk_Career = @Pk_Career;
-	ELSE
-		IF (@Code IS NOT NULL)
-			SELECT * FROM [dbo].Career WHERE Code = @Code
-		ELSE
-			IF (@CareerName IS NOT NULL)
-				SELECT * FROM [dbo].Career WHERE CareerName = @CareerName;
-			ELSE
-				IF (@DegreeName IS NOT NULL)
-					SELECT * FROM [dbo].Career WHERE DegreeName = @DegreeName;
-				ELSE
-					SELECT * FROM [dbo].Career;
+    SELECT  *
+    FROM    [dbo].Career
+    WHERE   (@Pk_Career IS NULL OR Pk_Career = @Pk_Career)
+            AND (@Code IS NULL OR Code = @Code)
+            AND (@CareerName IS NULL OR CareerName = @CareerName)
+            AND (@DegreeName IS NULL OR DegreeName = @DegreeName)
 END
-GO
 
 CREATE OR ALTER PROCEDURE udpDeleteCareer(@Pk_Career AS INT)
 AS
@@ -46,4 +36,3 @@ BEGIN
     WHERE
         Pk_Career = @Pk_Career;
 END
-GO
