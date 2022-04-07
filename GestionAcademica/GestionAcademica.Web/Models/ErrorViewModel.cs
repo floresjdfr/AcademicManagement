@@ -1,6 +1,6 @@
 using System;
 
-namespace PruebaMVC_API.Models
+namespace GestionAcademica.Web.Models
 {
     public class ErrorViewModel
     {

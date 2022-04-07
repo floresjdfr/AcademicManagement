@@ -21,14 +21,22 @@ namespace GestionAcademica.Logic
         #endregion
 
         #region Methods
-        public Career Create(Career career)
-        {
-            return careerService.InsertCareer(career);
-        }
-        public List<Career> Get()
-        {
-            return careerService.ListCareer();
-        }
+        //public Response Create(Career career)
+        //{
+        //    return careerService.InsertCareer(career);
+        //}
+        //public List<Base> Get()
+        //{
+        //    List<Base> responseList = new List<Base>();
+        //    var response = careerService.ListCareer();
+
+        //    if (response.Code == Response.OK)
+        //        ((List<Career>)response.Content).ForEach(item => responseList.Add(item));
+        //    else
+        //        responseList.Add((Error)response.Content);
+
+        //    return responseList;
+        //}
         #endregion
 
     }

@@ -1,4 +1,4 @@
-﻿using GestionAcademica.Models;
+﻿using GestionAcademica.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GestionAcademica.DataAccess
+namespace GestionAcademica.API.DataAccess
 {
     public class CareerService : Service
     {

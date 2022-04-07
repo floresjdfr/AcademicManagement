@@ -4,8 +4,8 @@ using System.Text;
 
 namespace GestionAcademica.Models
 {
-    public class Base
+    public class Error : Base
     {
-        public int PK { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }
