@@ -7,6 +7,5 @@ namespace GestionAcademica.Models
     public class Base
     {
         public int ID { get; set; }
-        public string Message { get; set; }
     }
 }

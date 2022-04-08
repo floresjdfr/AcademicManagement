@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GestionAcademica.Web", "Ges
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GestionAcademica.API", "GestionAcademica.API\GestionAcademica.API.csproj", "{FA752FF7-3585-478A-9D87-99BE04F22501}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GestionAcademica.Models", "GestionAcademica.Models\GestionAcademica.Models.csproj", "{0B509201-F1B1-4C07-8BA8-B5B8E7E2ACC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FA752FF7-3585-478A-9D87-99BE04F22501}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA752FF7-3585-478A-9D87-99BE04F22501}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA752FF7-3585-478A-9D87-99BE04F22501}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B509201-F1B1-4C07-8BA8-B5B8E7E2ACC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B509201-F1B1-4C07-8BA8-B5B8E7E2ACC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B509201-F1B1-4C07-8BA8-B5B8E7E2ACC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B509201-F1B1-4C07-8BA8-B5B8E7E2ACC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

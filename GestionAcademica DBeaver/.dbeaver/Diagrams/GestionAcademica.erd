@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram version="1" name="GestionAcademica.erd">
+	<entities>
+		<data-source id="microsoft-180078660c7-372e9d206da4755d">
+			<entity id="1" name="Career" fq-name="GestionAcademica.dbo.Career" order="0" x="34" y="475">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="2" name="CareerCourses" fq-name="GestionAcademica.dbo.CareerCourses" order="1" x="41" y="141">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="3" name="Course" fq-name="GestionAcademica.dbo.Course" order="2" x="36" y="-173">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="4" name="CourseGroups" fq-name="GestionAcademica.dbo.CourseGroups" order="3" x="418" y="-165">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="5" name="Cycle" fq-name="GestionAcademica.dbo.[Cycle]" order="4" x="788" y="-11">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="6" name="CycleState" fq-name="GestionAcademica.dbo.CycleState" order="5" x="1084" y="21">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="7" name="Group" fq-name="GestionAcademica.dbo.[Group]" order="6" x="418" y="0">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="8" name="GroupStudents" fq-name="GestionAcademica.dbo.GroupStudents" order="7" x="433" y="242">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="9" name="Student" fq-name="GestionAcademica.dbo.Student" order="8" x="430" y="431">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="10" name="Teacher" fq-name="GestionAcademica.dbo.Teacher" order="9" x="786" y="225">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="11" name="User" fq-name="GestionAcademica.dbo.[User]" order="10" x="843" y="499">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+			<entity id="12" name="UserType" fq-name="GestionAcademica.dbo.UserType" order="11" x="1132" y="512">
+				<path name="dbo"/>
+				<path name="GestionAcademica"/>
+			</entity>
+		</data-source>
+	</entities>
+	<relations>
+		<relation name="FK__CarreerCo__Fk_Ca__4D94879B" fq-name="dbo.CareerCourses.FK__CarreerCo__Fk_Ca__4D94879B" type="fk" pk-ref="1" fk-ref="2"/>
+		<relation name="FK__Student__Fk_Carr__44FF419A" fq-name="dbo.Student.FK__Student__Fk_Carr__44FF419A" type="fk" pk-ref="1" fk-ref="9"/>
+		<relation name="FK__CarreerCo__Fk_Co__4CA06362" fq-name="dbo.CareerCourses.FK__CarreerCo__Fk_Co__4CA06362" type="fk" pk-ref="3" fk-ref="2"/>
+		<relation name="FK__CourseGro__Fk_Co__5070F446" fq-name="dbo.CourseGroups.FK__CourseGro__Fk_Co__5070F446" type="fk" pk-ref="3" fk-ref="4"/>
+		<relation name="FK__TGroup__Fk_Cycle__49C3F6B7" fq-name="dbo.[Group].FK__TGroup__Fk_Cycle__49C3F6B7" type="fk" pk-ref="5" fk-ref="7"/>
+		<relation name="FK__Cycle__Fk_CycleS__36B12243" fq-name="dbo.[Cycle].FK__Cycle__Fk_CycleS__36B12243" type="fk" pk-ref="6" fk-ref="5"/>
+		<relation name="FK__CourseGro__Fk_TG__5165187F" fq-name="dbo.CourseGroups.FK__CourseGro__Fk_TG__5165187F" type="fk" pk-ref="7" fk-ref="4"/>
+		<relation name="FK__GroupStud__Fk_TG__5441852A" fq-name="dbo.GroupStudents.FK__GroupStud__Fk_TG__5441852A" type="fk" pk-ref="7" fk-ref="8"/>
+		<relation name="FK__GroupStud__Fk_St__5535A963" fq-name="dbo.GroupStudents.FK__GroupStud__Fk_St__5535A963" type="fk" pk-ref="9" fk-ref="8"/>
+		<relation name="FK__TGroup__Fk_Teach__48CFD27E" fq-name="dbo.[Group].FK__TGroup__Fk_Teach__48CFD27E" type="fk" pk-ref="10" fk-ref="7"/>
+		<relation name="FK__Student__Fk_User__45F365D3" fq-name="dbo.Student.FK__Student__Fk_User__45F365D3" type="fk" pk-ref="11" fk-ref="9"/>
+		<relation name="FK__Teacher__Fk_User__4222D4EF" fq-name="dbo.Teacher.FK__Teacher__Fk_User__4222D4EF" type="fk" pk-ref="11" fk-ref="10"/>
+		<relation name="FK__TUser__Fk_UserTy__3F466844" fq-name="dbo.[User].FK__TUser__Fk_UserTy__3F466844" type="fk" pk-ref="12" fk-ref="11"/>
+	</relations>
+</diagram>
