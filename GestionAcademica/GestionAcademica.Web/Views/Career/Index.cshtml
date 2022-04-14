@@ -1,48 +1,58 @@
-﻿@model IEnumerable<GestionAcademica.Web.Models.Career>
+﻿@model GestionAcademica.Web.ViewModels.CareerVM
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table-career').DataTable();
+    })
+</script>
 <h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="table-career">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Code)
+                @Html.DisplayNameFor(model => model.Career.Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CareerName)
+                @Html.DisplayNameFor(model => model.Career.CareerName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DegreeName)
+                @Html.DisplayNameFor(model => model.Career.DegreeName)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CareerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DegreeName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.ListCareer)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CareerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DegreeName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+
+
+

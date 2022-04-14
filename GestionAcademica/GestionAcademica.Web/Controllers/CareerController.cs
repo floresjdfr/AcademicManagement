@@ -1,5 +1,5 @@
-﻿
-using GestionAcademica.Web.Models;
+﻿using GestionAcademica.Models;
+using GestionAcademica.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,26 +10,24 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-
 namespace GestionAcademica.Web.Controllers
 {
     public class CareerController : Controller
     {
-
+        private string url = "https://localhost:44367/api/career/";
         private HttpClient httpClient = new HttpClient();
-        private string url = "https://localhost:44367/api/Career/";
-
         // GET: CareerController
         public async Task<ActionResult> Index()
         {
-            List<Career> model = new List<Career>();
+            CareerVM model = new CareerVM();
             try
             {
                 var response = await httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
-                model = JsonSerializer.Deserialize<List<Career>>(json);
+                model.ListCareer = JsonSerializer.Deserialize<List<Career>>(json);
+                return View(model);
             }
             catch
             {
@@ -81,42 +79,45 @@ namespace GestionAcademica.Web.Controllers
         }
 
         // GET: CareerController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync(url + id.ToString());
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var model = JsonSerializer.Deserialize<Career>(json);
+            return View(model);
         }
 
         // POST: CareerController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Career career)
         {
             try
             {
+                var jsonText = JsonSerializer.Serialize(career);
+                var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync(url + id.ToString(), content);
+                response.EnsureSuccessStatusCode();
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(career);
             }
         }
 
         // GET: CareerController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            try
-            {
-                var response = await httpClient.GetAsync(url + id.ToString());
-                response.EnsureSuccessStatusCode();
+            var response = await httpClient.GetAsync(url + id.ToString());
+            response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<Career>(json);
-                return View(model);
-            }
-            catch
-            {
-                return RedirectToAction("Index");
-            }
+            var json = await response.Content.ReadAsStringAsync();
+            var model = JsonSerializer.Deserialize<Career>(json);
+            return View(model);
         }
 
         // POST: CareerController/Delete/5
@@ -129,13 +130,12 @@ namespace GestionAcademica.Web.Controllers
                 var response = await httpClient.DeleteAsync(url + id.ToString());
                 response.EnsureSuccessStatusCode();
 
-
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
-
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
         }
     }
 }
