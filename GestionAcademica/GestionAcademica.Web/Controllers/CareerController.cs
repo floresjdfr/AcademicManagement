@@ -44,7 +44,8 @@ namespace GestionAcademica.Web.Controllers
             {
                 CareerVM model = new CareerVM();
                 var responseCareer = await httpClient.GetAsync(careerUrl + id.ToString());
-                var responseCareerCourses = await httpClient.GetAsync(careerCoursesUrl + id.ToString());
+                var url = careerCoursesUrl + "GetByCareer/" + id.ToString();
+                var responseCareerCourses = await httpClient.GetAsync(url);
 
                 responseCareer.EnsureSuccessStatusCode();
                 responseCareerCourses.EnsureSuccessStatusCode();

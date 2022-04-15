@@ -5,12 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Cursos</h1>
+<hr />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table" id="table-courses">
     <thead>
         <tr>
             <th>
@@ -28,7 +26,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.ID)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -50,12 +47,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ID)
                 </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-                </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+        $('#table-courses').DataTable();
+    </script>
+}

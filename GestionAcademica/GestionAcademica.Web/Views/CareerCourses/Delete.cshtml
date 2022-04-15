@@ -1,0 +1,55 @@
+﻿@model GestionAcademica.Models.CareerCourses
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h3>¿Está seguro/a que desea borrar este curso?</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Course.Code)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Course.Code)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Course.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Course.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Course.Credits)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Course.Credits)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Course.WeeklyHours)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Course.WeeklyHours)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cycle)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cycle)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Career.ID"/>
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Details" asp-controller="Career" asp-route-id="@Model.Career.ID">Volver a Detalles de la Carrera</a>
+    </form>
+</div>

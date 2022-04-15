@@ -5,15 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#table-career').DataTable();
-    })
-</script>
 <h1>Carreras</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="text-right">
+    <a asp-action="Create" class="btn btn-primary">Crear Nueva Carrera</a>
 </p>
 <table class="table" id="table-career">
     <thead>
@@ -44,15 +38,18 @@
                     @Html.DisplayFor(modelItem => item.DegreeName)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                    @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table-career').DataTable();
+    })
+</script>
 

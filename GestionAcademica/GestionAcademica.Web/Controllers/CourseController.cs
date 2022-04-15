@@ -30,7 +30,7 @@ namespace GestionAcademica.Web.Controllers
                 var model = JsonSerializer.Deserialize<List<Course>>(json);
                 return View(model);
             }
-            catch (Exception ex)
+            catch
             {
                 return RedirectToAction("Index", "Home", new { });
             }
@@ -48,7 +48,7 @@ namespace GestionAcademica.Web.Controllers
                 var model = JsonSerializer.Deserialize<Course>(json);
                 return View(model);
             }
-            catch (Exception ex)
+            catch
             {
                 return RedirectToAction("Index");
             }

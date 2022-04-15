@@ -1,19 +1,98 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GestionAcademica.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GestionAcademica.Web.Controllers
 {
     public class CareerCoursesController : Controller
     {
-        public IActionResult Index()
-        {
+        private static readonly string urlCareerCourses = "https://localhost:44367/api/CareerCourses/";
+        private static readonly HttpClient httpClient = new HttpClient();
 
-            return View();
+        // GET: CareerController
+        public ActionResult Index()
+        {
+            return RedirectToAction("Index", "Career");
+        }
+        public async Task<ActionResult> Edit(int id)
+        {
+            try
+            {
+                var response = await httpClient.GetAsync(urlCareerCourses + id.ToString());
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                var model = JsonSerializer.Deserialize<CareerCourses>(json);
+
+                return View(model);
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Career");
+            }
         }
 
-        
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<ActionResult> Edit(CareerCourses careerCourse)
+        {
+            try
+            {
+                var modelString = JsonSerializer.Serialize(careerCourse);
+                var content = new StringContent(modelString, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PutAsync(urlCareerCourses + careerCourse.ID.ToString(), content);
+                response.EnsureSuccessStatusCode();
+            }
+            catch
+            {
+
+            }
+            return RedirectToAction("Details", "Career", new { id = careerCourse.Career.ID });
+        }
+
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var response = await httpClient.GetAsync(urlCareerCourses + id.ToString());
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                var model = JsonSerializer.Deserialize<CareerCourses>(json);
+
+                return View(model);
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Career");
+            }
+        }
+
+        // POST: CareerController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                var careerID = Convert.ToInt32(collection["Career.ID"]);
+                var response = await httpClient.DeleteAsync(urlCareerCourses + id.ToString());
+                response.EnsureSuccessStatusCode();
+                return RedirectToAction("Details", "Career", new { id = careerID });
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
     }
 }

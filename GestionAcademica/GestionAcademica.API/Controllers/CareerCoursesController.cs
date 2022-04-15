@@ -19,11 +19,23 @@ namespace GestionAcademica.API.Controllers
         CareerCoursesService careerCoursesService = new CareerCoursesService();
         #endregion
 
-        // GET api/<CareerCoursesController>/5
+
+        // GET api/GetByCareer/<CareerCoursesController>/5
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [HttpGet("{careerId}")]
-        public async Task<IActionResult> Get (int careerId)
+        [HttpGet("{careerCourseId}")]
+        public async Task<IActionResult> Get(int careerCourseId)
+        {
+            var result = await careerCoursesService.FindCareerCourse(careerCourseId);
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
+        // GET api/GetByCareer/<CareerCoursesController>/5
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("GetByCareer/{careerId}")]
+        public async Task<IActionResult> GetByCareer(int careerId)
         {
             var result = await careerCoursesService.GetCoursesByCareer(careerId);
             if (result == null) return BadRequest();
@@ -41,11 +53,14 @@ namespace GestionAcademica.API.Controllers
             return Ok(result);
         }
 
-        //// PUT api/<CareerCoursesController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT api/<CareerCoursesController>/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CareerCourses value)
+        {
+            var result = await careerCoursesService.UpdateCareerCourse(id, value);
+            if (result == false) return BadRequest();
+            return Ok(result);
+        }
 
         // DELETE api/<CareerCoursesController>/5
         [HttpDelete("{id}")]
