@@ -11,7 +11,7 @@ namespace GestionAcademica.API.DataAccess
     public class CareerCoursesService : Service
     {
         private static readonly string addCourseToCareer = "udpAddCourseToCareer";
-        private static readonly string getCoursesByCareer = "udpGetCoursesByCareer";
+        private static readonly string getCoursesByCareer = "udpFindCoursesByCareer";
         private static readonly string deleteCourseFromCareer = "udpDeleteCourseFromCareer";
         private SqlCommand command = null;
 
@@ -28,8 +28,11 @@ namespace GestionAcademica.API.DataAccess
 
                 command = new SqlCommand(addCourseToCareer, connection);
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Pk_Course", careerCourse.Course.ID));
                 command.Parameters.Add(new SqlParameter("@Pk_Career", careerCourse.Career.ID));
+                command.Parameters.Add(new SqlParameter("@Code", careerCourse.Course.Code));
+                command.Parameters.Add(new SqlParameter("@Name", careerCourse.Course.Name));
+                command.Parameters.Add(new SqlParameter("@Credits", careerCourse.Course.Credits));
+                command.Parameters.Add(new SqlParameter("@WeeklyHours", careerCourse.Course.WeeklyHours));
                 command.Parameters.Add(new SqlParameter("@Year", careerCourse.Year));
                 command.Parameters.Add(new SqlParameter("@Cycle", careerCourse.Cycle));
 

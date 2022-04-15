@@ -1,0 +1,58 @@
+﻿@model GestionAcademica.Web.ViewModels.CareerVM
+
+
+<h4>Lista de Cursos</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Código
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Creditos
+            </th>
+            <th>
+                Horas Semanales
+            </th>
+            <th>
+                Año
+            </th>
+            <th>
+                Ciclo
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListCareerCourses)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(_ => item.Course.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(_ => item.Course.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(_ => item.Course.Credits)
+                </td>
+                <td>
+                    @Html.DisplayFor(_ => item.Course.WeeklyHours)
+                </td>
+                <td>
+                    @Html.DisplayFor(_ => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(_ => item.Cycle)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -14,15 +14,16 @@ namespace GestionAcademica.Web.Controllers
 {
     public class CareerController : Controller
     {
-        private string url = "https://localhost:44367/api/career/";
-        private HttpClient httpClient = new HttpClient();
+        private readonly string careerUrl = "https://localhost:44367/api/career/";
+        private readonly string careerCoursesUrl = "https://localhost:44367/api/careercourses/";
+        private readonly HttpClient httpClient = new HttpClient();
         // GET: CareerController
         public async Task<ActionResult> Index()
         {
             CareerVM model = new CareerVM();
             try
             {
-                var response = await httpClient.GetAsync(url);
+                var response = await httpClient.GetAsync(careerUrl);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -41,11 +42,19 @@ namespace GestionAcademica.Web.Controllers
         {
             try
             {
-                var response = await httpClient.GetAsync(url + id.ToString());
-                response.EnsureSuccessStatusCode();
+                CareerVM model = new CareerVM();
+                var responseCareer = await httpClient.GetAsync(careerUrl + id.ToString());
+                var responseCareerCourses = await httpClient.GetAsync(careerCoursesUrl + id.ToString());
 
-                var json = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<Career>(json);
+                responseCareer.EnsureSuccessStatusCode();
+                responseCareerCourses.EnsureSuccessStatusCode();
+
+                var jsonCareer = await responseCareer.Content.ReadAsStringAsync();
+                model.Career = JsonSerializer.Deserialize<Career>(jsonCareer);
+
+                var jsonCareerCourses = await responseCareerCourses.Content.ReadAsStringAsync();
+                model.ListCareerCourses = JsonSerializer.Deserialize<List<CareerCourses>>(jsonCareerCourses);
+
                 return View(model);
             }
             catch
@@ -69,7 +78,7 @@ namespace GestionAcademica.Web.Controllers
             {
                 var jsonText = JsonSerializer.Serialize(career);
                 var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(url, content);
+                var response = await httpClient.PostAsync(careerUrl, content);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -81,7 +90,7 @@ namespace GestionAcademica.Web.Controllers
         // GET: CareerController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var response = await httpClient.GetAsync(url + id.ToString());
+            var response = await httpClient.GetAsync(careerUrl + id.ToString());
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -98,7 +107,7 @@ namespace GestionAcademica.Web.Controllers
             {
                 var jsonText = JsonSerializer.Serialize(career);
                 var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
-                var response = await httpClient.PutAsync(url + id.ToString(), content);
+                var response = await httpClient.PutAsync(careerUrl + id.ToString(), content);
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction(nameof(Index));
@@ -112,7 +121,7 @@ namespace GestionAcademica.Web.Controllers
         // GET: CareerController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var response = await httpClient.GetAsync(url + id.ToString());
+            var response = await httpClient.GetAsync(careerUrl + id.ToString());
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
@@ -127,10 +136,27 @@ namespace GestionAcademica.Web.Controllers
         {
             try
             {
-                var response = await httpClient.DeleteAsync(url + id.ToString());
+                var response = await httpClient.DeleteAsync(careerUrl + id.ToString());
                 response.EnsureSuccessStatusCode();
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<ActionResult> AddNewCourse(CareerVM model)
+        {
+            try
+            {
+                model.CareerCourse.Career = model.Career;
+                var careerCourseJson = JsonSerializer.Serialize(model.CareerCourse);
+                var requestContent = new StringContent(careerCourseJson, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(careerCoursesUrl, requestContent);
+                response.EnsureSuccessStatusCode();
+                return RedirectToAction("Details", new { id = model.CareerCourse.Career.ID });
             }
             catch
             {

@@ -1,37 +1,101 @@
-﻿@model GestionAcademica.Models.Career
+﻿@model GestionAcademica.Web.ViewModels.CareerVM
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Details</h1>
-
 <div>
-    <h4>Career</h4>
+    <h4>Carrera</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Code)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Career.Code)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Code)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Career.Code)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CareerName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Career.CareerName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CareerName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Career.CareerName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DegreeName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Career.DegreeName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DegreeName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Career.DegreeName)
         </dd>
     </dl>
 </div>
+<hr />
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("Editar Información de la Carrera", "Edit", new { id = Model.Career.ID }) |
+    <a asp-action="Index">Volver a Lista de Carreras</a>
+</div>
+<p class="text-right">
+    <a data-toggle="modal" data-target="#addNewCourseModal" class="btn btn-primary" href="#addNewCourseModal">Agregar Nuevo Curso</a>
+</p>
+<div>
+    <partial name="_CareerCoursesList" />
+</div>
+<hr />
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addNewCourseModal" tabindex="-1" aria-labelledby="addNewCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="AddNewCourse">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNewCourseModalLabel">Agregar Nuevo Curso</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="CareerCourse.Course.Code" class="control-label"></label>
+                        <input asp-for="CareerCourse.Course.Code" class="form-control" />
+                        <span asp-validation-for="CareerCourse.Course.Code" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CareerCourse.Course.Name" class="control-label"></label>
+                        <input asp-for="CareerCourse.Course.Name" class="form-control" />
+                        <span asp-validation-for="CareerCourse.Course.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CareerCourse.Course.Credits" class="control-label"></label>
+                        <input asp-for="CareerCourse.Course.Credits" class="form-control" />
+                        <span asp-validation-for="CareerCourse.Course.Credits" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CareerCourse.Course.WeeklyHours" class="control-label"></label>
+                        <input asp-for="CareerCourse.Course.WeeklyHours" class="form-control" />
+                        <span asp-validation-for="CareerCourse.Course.WeeklyHours" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CareerCourse.Cycle" class="control-label"></label>
+                        <input asp-for="CareerCourse.Cycle" class="form-control" />
+                        <span asp-validation-for="CareerCourse.Cycle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CareerCourse.Year" class="control-label"></label>
+                        <input asp-for="CareerCourse.Year" class="form-control" />
+                        <span asp-validation-for="CareerCourse.Year" class="text-danger"></span>
+                    </div>
+                </div>
+                <input type="hidden" asp-for="Career.ID" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Curso</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>

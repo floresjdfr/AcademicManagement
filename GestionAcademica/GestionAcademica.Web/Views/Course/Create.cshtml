@@ -1,11 +1,13 @@
-﻿@model GestionAcademica.Models.Career
+﻿@model GestionAcademica.Models.Course
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4>Career</h4>
+<h1>Create</h1>
+
+<h4>Course</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -17,14 +19,19 @@
                 <span asp-validation-for="Code" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CareerName" class="control-label"></label>
-                <input asp-for="CareerName" class="form-control" />
-                <span asp-validation-for="CareerName" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DegreeName" class="control-label"></label>
-                <input asp-for="DegreeName" class="form-control" />
-                <span asp-validation-for="DegreeName" class="text-danger"></span>
+                <label asp-for="Credits" class="control-label"></label>
+                <input asp-for="Credits" class="form-control" />
+                <span asp-validation-for="Credits" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WeeklyHours" class="control-label"></label>
+                <input asp-for="WeeklyHours" class="form-control" />
+                <span asp-validation-for="WeeklyHours" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
