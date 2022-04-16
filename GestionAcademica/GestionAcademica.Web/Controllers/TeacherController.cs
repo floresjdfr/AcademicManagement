@@ -31,19 +31,13 @@ namespace GestionAcademica.Web.Controllers
             }
             catch
             {
-                
+
             }
             return View(model);
         }
 
         // GET: TeacherController/Details/5
         public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: TeacherController/Create
-        public ActionResult Create()
         {
             return View();
         }
@@ -67,23 +61,33 @@ namespace GestionAcademica.Web.Controllers
         }
 
         // GET: TeacherController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync(teacherUrl + id.ToString());
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var model = JsonSerializer.Deserialize<Teacher>(json);
+            return PartialView("_Edit", model);
         }
 
         // POST: TeacherController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Teacher teacher)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var jsonText = JsonSerializer.Serialize(teacher);
+                var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync(teacherUrl + id.ToString(), content);
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index");
             }
         }
 

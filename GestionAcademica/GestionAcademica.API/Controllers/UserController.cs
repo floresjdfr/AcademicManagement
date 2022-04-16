@@ -26,6 +26,7 @@ namespace GestionAcademica.API.Controllers
         {
             var result = await userService.ListUser();
             if (result == null) return BadRequest();
+            result.ForEach(item => item .Password = "");
 
             return Ok(result);
         }
@@ -38,6 +39,7 @@ namespace GestionAcademica.API.Controllers
         {
             var result = await userService.FindUser(id);
             if (result == null) return NotFound();
+            result.Password = null;
 
             return Ok(result);
         }

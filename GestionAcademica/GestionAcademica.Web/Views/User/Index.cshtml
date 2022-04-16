@@ -1,4 +1,4 @@
-﻿@model GestionAcademica.Web.ViewModels.TeacherVM
+﻿@model GestionAcademica.Web.ViewModels.UserVM
 
 @{
     ViewData["Title"] = "Profesores";
@@ -8,47 +8,34 @@
 <h1>Profesores</h1>
 
 <p class="text-right">
-    <a data-target="#addNewTeacherModal" data-toggle="modal" href="#addNewTeacherModal" class="btn btn-primary">Agregar Nuevo Profesor</a>
+    <a data-target="#addNewUserModal" data-toggle="modal" href="#addNewUserModal" class="btn btn-primary">Agregar Nuevo Usuario</a>
 </p>
-<table class="table" id="table-teachers">
+<table class="table" id="table-user">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Teacher.IdIdentidad)
+                @Html.DisplayNameFor(model => model.User.UserID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Teacher.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Teacher.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Teacher.Email)
+                @Html.DisplayNameFor(model => model.User.UserType.TypeDescription)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.TeacherList)
+        @foreach (var item in Model.UserList)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdIdentidad)
+                    @Html.DisplayFor(modelItem => item.UserID)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
+                    @Html.DisplayFor(modelItem => item.UserType.TypeDescription)
                 </td>
                 <td>
                     <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
-                    @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
-                <a href="javascript:;">Detalles</a> |
-                    <a href="javascript:;" onclick="deleteTeacher(@item.ID)">Eliminar</a>
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    <a href="javascript:;" onclick="deleteUser(@item.ID)">Eliminar</a>
                 </td>
             </tr>
         }
@@ -61,11 +48,11 @@
 
 <script>
     $(document).ready(function () {
-        $("#table-teachers").DataTable();
+        $("#table-user").DataTable();
     })
     function edit(id) {
         $.ajax({
-            url: '/Teacher/Edit',
+            url: '/User/Edit',
             type: 'GET',
             data: {
                 'id': id
@@ -74,16 +61,16 @@
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                 $("#partials").html(data);
-                $("#editTeacherModal").modal("show");
+                $("#editUserModal").modal("show");
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));
             }
         });
     }
-    function deleteTeacher(id) {
+    function deleteUser(id) {
         $.ajax({
-            url: '/Teacher/Delete',
+            url: '/User/Delete',
             type: 'GET',
             data: {
                 'id': id
@@ -92,7 +79,7 @@
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                 $("#partials").html(data);
-                $("#deleteTeacherModal").modal("show");
+                $("#deleteUserModal").modal("show");
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));

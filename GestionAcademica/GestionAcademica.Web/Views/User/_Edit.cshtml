@@ -1,0 +1,46 @@
+﻿@model GestionAcademica.Web.ViewModels.UserVM
+<!-- Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="User.UserID" class="control-label"></label>
+                        <input asp-for="User.UserID" class="form-control" />
+                        <span asp-validation-for="User.UserID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Nueva contraseña</label>
+                        <input asp-for="User.Password" class="form-control" />
+                        <span asp-validation-for="User.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="User.UserType.TypeDescription" class="control-label"></label>
+                        <select class="form-control" asp-for="User.UserType.ID" asp-items="@(new SelectList(Model.UserTypesList, "ID", "TypeDescription"))">
+                            <option>Seleccione Tipo de Usuario</option>
+                        </select>
+                        <span asp-validation-for="User.UserType.TypeDescription" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-primary" asp-route-id="@Model.User.ID" />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

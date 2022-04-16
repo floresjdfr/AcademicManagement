@@ -1,5 +1,4 @@
 ﻿@model GestionAcademica.Models.Teacher
-
 <!-- Modal -->
 <div class="modal fade" id="deleteTeacherModal" tabindex="-1" aria-labelledby="deleteTeacherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -49,7 +48,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <input type="submit" value="Delete" class="btn btn-danger" asp-route-id="@Model.ID"/>
+                        <input type="submit" value="Delete" class="btn btn-danger" asp-route-id="@Model.ID" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
@@ -57,3 +56,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
