@@ -27,12 +27,12 @@
                         <input asp-for="Career.DegreeName" class="form-control" />
                         <span asp-validation-for="Career.DegreeName" class="text-danger"></span>
                     </div>
-                    <input type="hidden" asp-for="Career.ID"/>
-                    <div class="modal-footer">
-                        <div class="form-group">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary" asp-route-id="@Model.Career.ID">Guardar Carrera</button>
-                        </div>
+                    <input type="hidden" asp-for="Career.ID" />
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" asp-route-id="@Model.Career.ID">Guardar Carrera</button>
                     </div>
                 </div>
             </form>

@@ -1,0 +1,43 @@
+﻿@model GestionAcademica.Web.ViewModels.TeacherVM
+<!-- Modal -->
+<div class="modal fade" id="addNewTeacherModal" tabindex="-1" aria-labelledby="addNewTeacherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Create">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Profesor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Teacher.IdIdentidad" class="control-label"></label>
+                        <input asp-for="Teacher.IdIdentidad" class="form-control" />
+                        <span asp-validation-for="Teacher.IdIdentidad" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Teacher.Name" class="control-label"></label>
+                        <input asp-for="Teacher.Name" class="form-control" />
+                        <span asp-validation-for="Teacher.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Teacher.PhoneNumber" class="control-label"></label>
+                        <input asp-for="Teacher.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="Teacher.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Teacher.Email" class="control-label"></label>
+                        <input asp-for="Teacher.Email" class="form-control" />
+                        <span asp-validation-for="Teacher.Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Profesor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
