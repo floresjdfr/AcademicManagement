@@ -64,11 +64,11 @@ namespace GestionAcademica.Web.Controllers
             }
         }
 
-        // GET: CareerController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        //// GET: CareerController/Create
+        //public ActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: CareerController/Create
         [HttpPost]
@@ -91,12 +91,14 @@ namespace GestionAcademica.Web.Controllers
         // GET: CareerController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
+            var model = new CareerVM();
+
             var response = await httpClient.GetAsync(careerUrl + id.ToString());
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Career>(json);
-            return View(model);
+            model.Career = JsonSerializer.Deserialize<Career>(json);
+            return PartialView("_Edit", model);
         }
 
         // POST: CareerController/Edit/5
@@ -111,23 +113,24 @@ namespace GestionAcademica.Web.Controllers
                 var response = await httpClient.PutAsync(careerUrl + id.ToString(), content);
                 response.EnsureSuccessStatusCode();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View(career);
+                return RedirectToAction("Index");
             }
         }
 
         // GET: CareerController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
+            CareerVM model = new CareerVM();
             var response = await httpClient.GetAsync(careerUrl + id.ToString());
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Career>(json);
-            return View(model);
+            model.Career = JsonSerializer.Deserialize<Career>(json);
+            return PartialView("_Delete" ,model);
         }
 
         // POST: CareerController/Delete/5

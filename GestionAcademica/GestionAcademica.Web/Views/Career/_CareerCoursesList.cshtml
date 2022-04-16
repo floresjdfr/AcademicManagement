@@ -48,18 +48,56 @@
                     @Html.DisplayFor(_ => item.Cycle)
                 </td>
                 <td>
-                    @Html.ActionLink("Editar", "Edit", "CareerCourses", new { id = item.ID }) |
-                    @Html.ActionLink("Eliminar", "Delete", "CareerCourses", new { id = item.ID })
+                    <a href="javascript:;" onclick="editCareerCourse(@item.ID)">Editar</a> |
+                    <a href="javascript:;" onclick="deleteCareerCourse(@item.ID)">Eliminar</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<div id="partial"></div>
+
 <script>
     $(document).ready(function () {
         $("#table-courses").DataTable();
     });
+    function deleteCareerCourse(id) {
+        $.ajax({
+            url: '/CareerCourses/Delete',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partial").html(data);
+                $("#eliminarCareerCourseModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+    function editCareerCourse(id) {
+        $.ajax({
+            url: '/CareerCourses/Edit',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partial").html(data);
+                $("#editCareerCourseModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
 </script>
 
 

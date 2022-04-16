@@ -31,7 +31,7 @@ namespace GestionAcademica.Web.Controllers
                 var json = await response.Content.ReadAsStringAsync();
                 var model = JsonSerializer.Deserialize<CareerCourses>(json);
 
-                return View(model);
+                return PartialView("_Edit" ,model);
             }
             catch
             {
@@ -68,7 +68,7 @@ namespace GestionAcademica.Web.Controllers
                 var json = await response.Content.ReadAsStringAsync();
                 var model = JsonSerializer.Deserialize<CareerCourses>(json);
 
-                return View(model);
+                return PartialView("_Delete" ,model);
             }
             catch
             {

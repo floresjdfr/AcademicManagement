@@ -18,7 +18,7 @@
 				<path name="dbo"/>
 				<path name="GestionAcademica"/>
 			</entity>
-			<entity id="5" name="CycleState" fq-name="GestionAcademica.dbo.CycleState" order="5" x="1084" y="21">
+			<entity id="5" name="CycleState" fq-name="GestionAcademica.dbo.CycleState" order="5" x="1105" y="21">
 				<path name="dbo"/>
 				<path name="GestionAcademica"/>
 			</entity>

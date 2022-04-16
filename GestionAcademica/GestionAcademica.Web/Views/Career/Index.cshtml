@@ -7,7 +7,7 @@
 
 <h1>Carreras</h1>
 <p class="text-right">
-    <a asp-action="Create" class="btn btn-primary">Crear Nueva Carrera</a>
+    <a data-target="#addNewCareerModal" data-toggle="modal" href="#addNewCareerModal" class="btn btn-primary">Crear Nueva Carrera</a>
 </p>
 <table class="table" id="table-career">
     <thead>
@@ -38,18 +38,58 @@
                     @Html.DisplayFor(modelItem => item.DegreeName)
                 </td>
                 <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
                     @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
-                    @Html.ActionLink("Eliminar", "Delete", new { id = item.ID })
+                    <a href="javascript:;" onclick="deleteCareer(@item.ID)">Eliminar</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<partial name="_Create" />
+
+<div id="editPartial"></div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#table-career').DataTable();
     })
+    function edit(id) {
+        $.ajax({
+            url: '/Career/Edit',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#editPartial").html(data);
+                $("#editCareerModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+    function deleteCareer(id) {
+        $.ajax({
+            url: '/Career/Delete',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#editPartial").html(data);
+                $("#eliminarCareerModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
 </script>
 
