@@ -8,33 +8,32 @@ using System.Threading.Tasks;
 
 namespace GestionAcademica.API.DataAccess
 {
-    public class CourseService : Service
+    public class TeacherService : Service
     {
-        private static readonly string insertCourse = "udpInsertCourse";
-        private static readonly string updateCourse = "udpModifyCourse";
-        private static readonly string listCourses = "udpFindCourse"; 
-        private static readonly string deleteCourse = "udpDeleteCourse";
+        private static readonly string insertTeacher = "udpInsertTeacher";
+        private static readonly string updateTeacher = "udpModifyTeacher";
+        private static readonly string deleteTeacher = "udpDeleteTeacher";
+        private static readonly string listTeachers = "udpFindTeacher";
         private SqlCommand command = null;
 
-        public CourseService() { }
-
+        public TeacherService() { }
 
         #region Create
-        public async Task<bool> InsertCourse(Course Course)
+        public async Task<bool> InsertTeacher(Teacher Teacher)
         {
             bool response = false;
             try
             {
                 Connect();
 
-                command = new SqlCommand(insertCourse, connection)
+                command = new SqlCommand(insertTeacher, connection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                command.Parameters.Add(new SqlParameter("@Code", Course.Code));
-                command.Parameters.Add(new SqlParameter("@Name", Course.Name));
-                command.Parameters.Add(new SqlParameter("@Credits", Course.Credits));
-                command.Parameters.Add(new SqlParameter("@WeeklyHours", Course.WeeklyHours));
+                command.Parameters.Add(new SqlParameter("@ID", Teacher.IdIdentidad));
+                command.Parameters.Add(new SqlParameter("@Name", Teacher.Name));
+                command.Parameters.Add(new SqlParameter("@PhoneNumber", Teacher.PhoneNumber));
+                command.Parameters.Add(new SqlParameter("@Email", Teacher.Email));
 
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
@@ -45,16 +44,16 @@ namespace GestionAcademica.API.DataAccess
             return response;
         }
         #endregion
-        
+
         #region Read
-        public async Task<List<Course>> ListCourses()
+        public async Task<List<Teacher>> ListTeacher()
         {
-            List<Course> response = new List<Course>();
+            List<Teacher> response = new List<Teacher>();
             try
             {
                 Connect();
 
-                command = new SqlCommand(listCourses, connection)
+                command = new SqlCommand(listTeachers, connection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -62,13 +61,13 @@ namespace GestionAcademica.API.DataAccess
                 var reader = await command.ExecuteReaderAsync();
                 while (reader.Read())
                 {
-                    response.Add(new Course
+                    response.Add(new Teacher
                     {
-                        ID = reader.GetInt32("Pk_Course"),
-                        Code = reader.GetString("Code"),
+                        ID = reader.GetInt32("Pk_Teacher"),
+                        IdIdentidad = reader.GetString("ID"),
                         Name = reader.GetString("Name"),
-                        Credits = reader.GetInt32("Credits"),
-                        WeeklyHours = reader.GetInt32("WeeklyHours")
+                        PhoneNumber = reader.GetString("PhoneNumber"),
+                        Email = reader.GetString("Email")
                     });
                 }
                 reader.Close();
@@ -83,31 +82,30 @@ namespace GestionAcademica.API.DataAccess
 
             return response;
         }
-        public async Task<Course> FindCourseById(int id)
+        public async Task<Teacher> FindTeacher(int id)
         {
-
             try
             {
-                Course response = null;
+                Teacher response = null;
 
                 Connect();
 
-                command = new SqlCommand(listCourses, connection)
+                command = new SqlCommand(listTeachers, connection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                command.Parameters.Add(new SqlParameter("@Pk_Course", id));
+                command.Parameters.Add(new SqlParameter("@Pk_Teacher", id));
 
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    response = (new Course
+                    response = (new Teacher
                     {
-                        ID = reader.GetInt32("Pk_Course"),
-                        Code = reader.GetString("Code"),
+                        ID = reader.GetInt32("Pk_Teacher"),
+                        IdIdentidad = reader.GetString("ID"),
                         Name = reader.GetString("Name"),
-                        Credits = reader.GetInt32("Credits"),
-                        WeeklyHours = reader.GetInt32("WeeklyHours")
+                        PhoneNumber = reader.GetString("PhoneNumber"),
+                        Email = reader.GetString("Email")
                     });
                 }
                 reader.Close();
@@ -124,23 +122,22 @@ namespace GestionAcademica.API.DataAccess
         #endregion
 
         #region Update
-        public async Task<bool> UpdateCourse(int courseId, Course Course)
+        public async Task<bool> UpdateTeacher(int TeacherId, Teacher Teacher)
         {
             bool response = false;
             try
             {
                 Connect();
 
-                command = new SqlCommand(updateCourse, connection)
+                command = new SqlCommand(updateTeacher, connection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                command.Parameters.Add(new SqlParameter("@Pk_Course", courseId));
-                command.Parameters.Add(new SqlParameter("@Code", Course.Code));
-                command.Parameters.Add(new SqlParameter("@Name", Course.Name));
-                command.Parameters.Add(new SqlParameter("@Credits", Course.Credits));
-                command.Parameters.Add(new SqlParameter("@WeeklyHours", Course.WeeklyHours));
-
+                command.Parameters.Add(new SqlParameter("@Pk_Teacher", TeacherId));
+                command.Parameters.Add(new SqlParameter("@ID", Teacher.IdIdentidad));
+                command.Parameters.Add(new SqlParameter("@Name", Teacher.Name));
+                command.Parameters.Add(new SqlParameter("@PhoneNumber", Teacher.PhoneNumber));
+                command.Parameters.Add(new SqlParameter("@Email", Teacher.Email));
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
                 if (rowsAffected > 0) response = true;
@@ -155,18 +152,18 @@ namespace GestionAcademica.API.DataAccess
         #endregion
 
         #region Delete
-        public async Task<bool> DeleteCourse(int courseId)
+        public async Task<bool> DeleteTeacher(int id)
         {
             bool response = false;
             try
             {
                 Connect();
 
-                command = new SqlCommand(deleteCourse, connection)
+                command = new SqlCommand(deleteTeacher, connection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                command.Parameters.Add(new SqlParameter("@Pk_Course", courseId));
+                command.Parameters.Add(new SqlParameter("@Pk_Teacher", id));
 
                 var affectedRows = await command.ExecuteNonQueryAsync();
 
@@ -179,5 +176,6 @@ namespace GestionAcademica.API.DataAccess
             return response;
         }
         #endregion
+
     }
 }

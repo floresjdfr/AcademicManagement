@@ -27,8 +27,10 @@ namespace GestionAcademica.API.DataAccess
             {
                 Connect();
 
-                command = new SqlCommand(insertCareer, connection);
-                command.CommandType = CommandType.StoredProcedure;
+                command = new SqlCommand(insertCareer, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 command.Parameters.Add(new SqlParameter("@Code", career.Code));
                 command.Parameters.Add(new SqlParameter("@CareerName", career.CareerName));
                 command.Parameters.Add(new SqlParameter("@DegreeName", career.DegreeName));
@@ -51,8 +53,10 @@ namespace GestionAcademica.API.DataAccess
             {
                 Connect();
 
-                command = new SqlCommand(listCareers, connection);
-                command.CommandType = CommandType.StoredProcedure;
+                command = new SqlCommand(listCareers, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
 
                 var reader = await command.ExecuteReaderAsync();
                 while (reader.Read())
@@ -86,8 +90,10 @@ namespace GestionAcademica.API.DataAccess
 
                 Connect();
 
-                command = new SqlCommand(listCareers, connection);
-                command.CommandType = CommandType.StoredProcedure;
+                command = new SqlCommand(listCareers, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 command.Parameters.Add(new SqlParameter("@Pk_Career", id));
 
                 var reader = await command.ExecuteReaderAsync();
@@ -122,8 +128,10 @@ namespace GestionAcademica.API.DataAccess
             {
                 Connect();
 
-                command = new SqlCommand(updateCareer, connection);
-                command.CommandType = CommandType.StoredProcedure;
+                command = new SqlCommand(updateCareer, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 command.Parameters.Add(new SqlParameter("@Pk_Career", careerId));
                 command.Parameters.Add(new SqlParameter("@Code", career.Code));
                 command.Parameters.Add(new SqlParameter("@CareerName", career.CareerName));
@@ -150,8 +158,10 @@ namespace GestionAcademica.API.DataAccess
             {
                 Connect();
 
-                command = new SqlCommand(deleteCareer, connection);
-                command.CommandType = CommandType.StoredProcedure;
+                command = new SqlCommand(deleteCareer, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 command.Parameters.Add(new SqlParameter("@Pk_Career", id));
 
                 var affectedRows = await command.ExecuteNonQueryAsync();
