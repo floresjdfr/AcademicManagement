@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Profesores</h1>
+<h1>Usuarios</h1>
 
 <p class="text-right">
     <a data-target="#addNewUserModal" data-toggle="modal" href="#addNewUserModal" class="btn btn-primary">Agregar Nuevo Usuario</a>
@@ -33,7 +33,8 @@
                     @Html.DisplayFor(modelItem => item.UserType.TypeDescription)
                 </td>
                 <td>
-                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
+                    <a href="javascript:;" onclick="edit(@item.ID, 0)">Editar Tipo Usuario</a> |
+                    <a href="javascript:;" onclick="edit(@item.ID, 1)">Editar Contraseña</a> |
                     @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                     <a href="javascript:;" onclick="deleteUser(@item.ID)">Eliminar</a>
                 </td>
@@ -50,18 +51,20 @@
     $(document).ready(function () {
         $("#table-user").DataTable();
     })
-    function edit(id) {
+    function edit(id, typeUpdate) {//typeUpdate = 0 => EditType, 1 => EditPassword
         $.ajax({
             url: '/User/Edit',
             type: 'GET',
             data: {
-                'id': id
+                'id': id,
+                'type': typeUpdate
             },
             dataType: 'html',
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                 $("#partials").html(data);
-                $("#editUserModal").modal("show");
+                var modalId = typeUpdate == 0 ? "#editUserModal" : "#editUserPasswordModal"
+                $(modalId).modal("show");
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));

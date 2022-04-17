@@ -11,18 +11,19 @@ END
 --UPDATE
 CREATE OR ALTER PROCEDURE udpModifyUser(
 	@Pk_User AS INT,
-	@ID AS VARCHAR(50), 
-	@Password as VARCHAR(50)
+	@Fk_UserType AS INT = NULL,
+	@Password as VARCHAR(50) = NULL
 )
 AS
 BEGIN
-    UPDATE 
-        [dbo].[User] 
-    SET 
-    	ID  = @ID,
-		Password = @Password
-    WHERE
-        Pk_User  = @Pk_User;
+	IF (@Fk_UserType IS NOT NULL)
+	BEGIN 
+		UPDATE [dbo].[User] SET Fk_UserType = @Fk_UserType WHERE Pk_User  = @Pk_User;
+	END
+	IF (@Password IS NOT NULL)
+	BEGIN 
+		UPDATE [dbo].[User] SET Password = @Password WHERE Pk_User  = @Pk_User;
+	END
 END
 
 --SEARCH

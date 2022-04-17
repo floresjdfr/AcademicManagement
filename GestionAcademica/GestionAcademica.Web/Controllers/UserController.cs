@@ -67,19 +67,19 @@ namespace GestionAcademica.Web.Controllers
         }
 
         // GET: UserController/Edit/5
-        public async Task<ActionResult> Edit(int id)
+        public async Task<ActionResult> Edit(int id, int type)
         {
             UserVM model = new UserVM();
 
             try
             {
-                var responseUsers = await httpClient.GetAsync(userUrl);
-                responseUsers.EnsureSuccessStatusCode();
+                var responseUser = await httpClient.GetAsync(userUrl+id.ToString());
+                responseUser.EnsureSuccessStatusCode();
 
                 var responseUserTypes = await httpClient.GetAsync(userTypeUrl);
                 responseUserTypes.EnsureSuccessStatusCode();
 
-                var jsonUser = await responseUsers.Content.ReadAsStringAsync();
+                var jsonUser = await responseUser.Content.ReadAsStringAsync();
                 var jsonUserTypes = await responseUserTypes.Content.ReadAsStringAsync();
 
                 model.User = JsonSerializer.Deserialize<User>(jsonUser);
@@ -90,7 +90,7 @@ namespace GestionAcademica.Web.Controllers
             {
 
             }
-            return PartialView("_Edit", model);
+            return type == 0 ? PartialView("_Edit", model) : PartialView("_EditPassword", model);
         }
 
         // POST: UserController/Edit/5

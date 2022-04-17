@@ -62,7 +62,7 @@ namespace GestionAcademica.API.DataAccess
                 {
                     response.Add(new User
                     {
-                        
+
                         ID = reader.GetInt32("Pk_User"),
                         UserID = reader.GetString("ID"),
                         Password = reader.GetString("Password"),
@@ -140,8 +140,8 @@ namespace GestionAcademica.API.DataAccess
                     CommandType = CommandType.StoredProcedure
                 };
                 command.Parameters.Add(new SqlParameter("@Pk_User", UserId));
-                command.Parameters.Add(new SqlParameter("@ID", User.ID));
-                command.Parameters.Add(new SqlParameter("@Password", User.Password));
+                if (User.UserType != null) command.Parameters.Add(new SqlParameter("@Fk_UserType", User.UserType.ID));
+                else command.Parameters.Add(new SqlParameter("@Password", User.Password));
 
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
