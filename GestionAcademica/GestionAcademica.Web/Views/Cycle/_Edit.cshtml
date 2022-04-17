@@ -1,0 +1,57 @@
+﻿@model GestionAcademica.Web.ViewModels.CycleVM
+<!-- Modal -->
+<div class="modal fade" id="editCycleModal" tabindex="-1" aria-labelledby="editCycleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Ciclo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Cycle.Year" class="control-label"></label>
+                        <input asp-for="Cycle.Year" class="form-control" />
+                        <span asp-validation-for="Cycle.Year" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cycle.Number" class="control-label"></label>
+                        <input asp-for="Cycle.Number" class="form-control" />
+                        <span asp-validation-for="Cycle.Number" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cycle.StartDate" class="control-label"></label>
+                        <input asp-for="Cycle.StartDate" class="form-control" />
+                        <span asp-validation-for="Cycle.StartDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cycle.EndDate" class="control-label"></label>
+                        <input asp-for="Cycle.EndDate" class="form-control" />
+                        <span asp-validation-for="Cycle.EndDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cycle.CycleState.StateDescription" class="control-label"></label>
+                        <select class="form-control" asp-for="Cycle.CycleState.ID" asp-items="@(new SelectList(Model.CycleStateList, "ID", "StateDescription"))">
+                            <option>Seleccione Estado Ciclo</option>
+                        </select>
+                        <span asp-validation-for="Cycle.CycleState.StateDescription" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="Cycle.ID"/>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-primary" asp-route-id="@Model.Cycle.ID" />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
