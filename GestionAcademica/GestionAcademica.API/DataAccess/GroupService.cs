@@ -1,13 +1,19 @@
-﻿using System;
+﻿using GestionAcademica.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GestionAcademica.API.DataAccess
 {
+    public enum GroupUpdateType
+    {
+        NumberAndSchedule = 1,
+        Teacher = 2,
+        Cycle = 3
+    }
     public class GroupService : Service
     {
         private static readonly string insertGroup = "udpInsertGroup";
@@ -30,11 +36,8 @@ namespace GestionAcademica.API.DataAccess
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                command.Parameters.Add(new SqlParameter("@Fk_GroupState", group.GroupState.ID));
-                command.Parameters.Add(new SqlParameter("@Year", group.Year));
                 command.Parameters.Add(new SqlParameter("@Number", group.Number));
-                command.Parameters.Add(new SqlParameter("@StartDate", group.StartDate));
-                command.Parameters.Add(new SqlParameter("@EndDate", group.EndDate));
+                command.Parameters.Add(new SqlParameter("@Schedule", group.Schedule));
 
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
@@ -64,16 +67,30 @@ namespace GestionAcademica.API.DataAccess
                 {
                     response.Add(new Group
                     {
-                        GroupState = new GroupState
+                        Cycle = !reader.IsDBNull("Pk_Cycle") ? new Cycle
                         {
-                            ID = reader.GetInt32("Pk_GroupState"),
-                            StateDescription = reader.GetString("StateDescription")
-                        },
-                        ID = reader.GetInt32("Pk_Group"),
-                        Year = reader.GetInt32("Year"),
-                        Number = reader.GetInt32("Number"),
-                        StartDate = reader.GetDateTime("StartDate"),
-                        EndDate = reader.GetDateTime("EndDate"),
+                            CycleState = !reader.IsDBNull("Pk_CycleState") ? new CycleState
+                            {
+                                ID = reader.GetInt32("Pk_CycleState"),
+                                StateDescription = reader.GetString("StateDescription")
+                            } : null,
+                            ID = reader.GetInt32("Pk_Cycle"),
+                            Year = reader.GetInt32("Year"),
+                            Number = reader.GetInt32("Number"),
+                            StartDate = reader.GetDateTime("StartDate"),
+                            EndDate = reader.GetDateTime("EndDate"),
+                        } : null,
+                        Teacher = !reader.IsDBNull("Pk_Teacher") ? new Teacher
+                        {
+                            ID = reader.GetInt32("Pk_Teacher"),
+                            IdIdentidad = reader.GetString("ID"),
+                            Name = reader.GetString("Name"),
+                            PhoneNumber = reader.GetString("PhoneNumber"),
+                            Email = reader.GetString("Email")
+                        } : null,
+                        Number = reader.GetString("Number"),
+                        Schedule = reader.GetString("Schedule"),
+                        ID = reader.GetInt32("Pk_Group")
                     });
                 }
                 reader.Close();
@@ -101,27 +118,40 @@ namespace GestionAcademica.API.DataAccess
                     CommandType = CommandType.StoredProcedure
                 };
                 command.Parameters.Add(new SqlParameter("@Pk_Group", group.ID));
-                if (group.GroupState != null) command.Parameters.Add(new SqlParameter("@Fk_GroupState", group.GroupState.ID));
-                command.Parameters.Add(new SqlParameter("@Year", group.Year));
+                if (group.Teacher != null) command.Parameters.Add(new SqlParameter("@Fk_Teacher", group.Teacher.ID));
+                if (group.Cycle != null) command.Parameters.Add(new SqlParameter("@Fk_Cycle", group.Cycle.ID));
                 command.Parameters.Add(new SqlParameter("@Number", group.Number));
-                command.Parameters.Add(new SqlParameter("@StartDate", group.StartDate));
-                command.Parameters.Add(new SqlParameter("@EndDate", group.EndDate));
+                command.Parameters.Add(new SqlParameter("@Schedule", group.Schedule));
 
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.Read())
                 {
                     response = (new Group
                     {
-                        GroupState = new GroupState
+                        Cycle = !reader.IsDBNull("Pk_Cycle") ? new Cycle
                         {
-                            ID = reader.GetInt32("Pk_GroupState"),
-                            StateDescription = reader.GetString("StateDescription")
-                        },
-                        ID = reader.GetInt32("Pk_Group"),
-                        Year = reader.GetInt32("Year"),
-                        Number = reader.GetInt32("Number"),
-                        StartDate = reader.GetDateTime("StartDate"),
-                        EndDate = reader.GetDateTime("EndDate"),
+                            CycleState = !reader.IsDBNull("Pk_CycleState") ? new CycleState
+                            {
+                                ID = reader.GetInt32("Pk_CycleState"),
+                                StateDescription = reader.GetString("StateDescription")
+                            } : null,
+                            ID = reader.GetInt32("Pk_Cycle"),
+                            Year = reader.GetInt32("Year"),
+                            Number = reader.GetInt32("Number"),
+                            StartDate = reader.GetDateTime("StartDate"),
+                            EndDate = reader.GetDateTime("EndDate"),
+                        } : null,
+                        Teacher = !reader.IsDBNull("Pk_Teacher") ? new Teacher
+                        {
+                            ID = reader.GetInt32("Pk_Teacher"),
+                            IdIdentidad = reader.GetString("ID"),
+                            Name = reader.GetString("Name"),
+                            PhoneNumber = reader.GetString("PhoneNumber"),
+                            Email = reader.GetString("Email")
+                        } : null,
+                        Number = reader.GetString("Number"),
+                        Schedule = reader.GetString("Schedule"),
+                        ID = reader.GetInt32("Pk_Group")
                     });
                 }
                 reader.Close();
@@ -138,7 +168,7 @@ namespace GestionAcademica.API.DataAccess
         #endregion
 
         #region Update
-        public async Task<bool> UpdateGroup(int GroupId, Group group)
+        public async Task<bool> UpdateGroup(int GroupId, Group group, int type)
         {
             bool response = false;
             try
@@ -150,11 +180,11 @@ namespace GestionAcademica.API.DataAccess
                     CommandType = CommandType.StoredProcedure
                 };
                 command.Parameters.Add(new SqlParameter("@Pk_Group", GroupId));
-                command.Parameters.Add(new SqlParameter("@Fk_GroupState", group.GroupState.ID));
-                command.Parameters.Add(new SqlParameter("@Year", group.Year));
+                if (group.Teacher != null) command.Parameters.Add(new SqlParameter("@Fk_Teacher", group.Teacher.ID));
+                if (group.Cycle != null) command.Parameters.Add(new SqlParameter("@Fk_Cycle", group.Cycle.ID));
                 command.Parameters.Add(new SqlParameter("@Number", group.Number));
-                command.Parameters.Add(new SqlParameter("@StartDate", group.StartDate));
-                command.Parameters.Add(new SqlParameter("@EndDate", group.EndDate));
+                command.Parameters.Add(new SqlParameter("@Schedule", group.Schedule));
+                command.Parameters.Add(new SqlParameter("@ModifyType", type));
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
                 if (rowsAffected > 0) response = true;
@@ -195,4 +225,4 @@ namespace GestionAcademica.API.DataAccess
         #endregion
     }
 }
-}
+

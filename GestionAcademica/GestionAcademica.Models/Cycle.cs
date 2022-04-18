@@ -10,7 +10,7 @@ namespace GestionAcademica.Models
     {
         public CycleState CycleState { get; set; }
         
-        [DisplayName("Año")]
+        [DisplayName("Año Ciclo")]
         public int? Year { get; set; }
 
         [DisplayName("Numero Ciclo")]

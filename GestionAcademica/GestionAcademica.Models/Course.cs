@@ -7,10 +7,10 @@ namespace GestionAcademica.Models
 {
     public class Course : Base
     {
-        [DisplayName("Código")]
+        [DisplayName("Código Curso")]
         public string Code { get; set; }
         
-        [DisplayName("Nombre")]
+        [DisplayName("Nombre Curso")]
         public string Name { get; set; }
         
         [DisplayName("Creditos")]

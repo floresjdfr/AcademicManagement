@@ -39,7 +39,7 @@ END
 
 --SEARCH
 CREATE OR ALTER PROCEDURE udpFindGroup(
-	@Pk_Group AS INT,
+	@Pk_Group AS INT = NULL,
 	@Fk_Teacher AS INT = NULL,
 	@Fk_Cycle AS INT = NULL,
 	@Number AS VARCHAR(50) = NULL,
@@ -47,10 +47,11 @@ CREATE OR ALTER PROCEDURE udpFindGroup(
 )
 AS
 BEGIN
-    SELECT  * 
+	SELECT  * 
     FROM    [dbo].[Group] g 
-    JOIN [dbo].Teacher t ON g.Fk_Teacher = t.Pk_Teacher 
-    JOIN [dbo].[Cycle] c2  ON g.Fk_Cycle = c2.Pk_Cycle 
+    LEFT JOIN [dbo].Teacher t ON g.Fk_Teacher = t.Pk_Teacher 
+    LEFT JOIN [dbo].[Cycle] c2  ON g.Fk_Cycle = c2.Pk_Cycle 
+    	LEFT JOIN [DBO].CycleState cs ON c2.Fk_CycleState = cs.Pk_CycleState 
     WHERE   (@Pk_Group IS NULL OR g.Pk_Group = @Pk_Group) 
             AND (@Fk_Teacher IS NULL OR g.Fk_Teacher = @Fk_Teacher) 
             AND (@Fk_Cycle IS NULL OR g.Fk_Cycle = @Fk_Cycle) 

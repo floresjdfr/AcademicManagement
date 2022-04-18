@@ -10,7 +10,7 @@ namespace GestionAcademica.Models
         public Course Course { get; set; }
         public Career Career { get; set; }
         
-        [DisplayName("Año")]
+        [DisplayName("Año Carrera")]
         public int Year { get; set; }
 
         [DisplayName("Ciclo")]

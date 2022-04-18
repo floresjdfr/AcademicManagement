@@ -9,10 +9,10 @@ namespace GestionAcademica.Models
     {
         public User User { get; set; }
         
-        [DisplayName("Cédula")]
+        [DisplayName("Cédula Profesor")]
         public string IdIdentidad { get; set; }
 
-        [DisplayName("Nombre")]
+        [DisplayName("Nombre Profesor")]
         public string Name { get; set; }
 
         [DisplayName("Número de Teléfono")]

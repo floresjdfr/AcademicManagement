@@ -7,7 +7,7 @@ namespace GestionAcademica.Models
 {
     public class CycleState : Base
     {
-        [DisplayName("Estado")]
+        [DisplayName("Estado Ciclo")]
         public string StateDescription { get; set; }
     }
 }

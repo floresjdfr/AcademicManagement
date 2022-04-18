@@ -1,0 +1,105 @@
+﻿@model GestionAcademica.Web.ViewModels.GroupVM
+
+@{
+    ViewData["Title"] = "Grupos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Grupos</h1>
+<p class="text-right">
+    <a data-target="#addNewGroupModal" data-toggle="modal" href="#addNewGroupModal" class="btn btn-primary">Agregar Nuevo Grupo</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Schedule)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.GroupList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Schedule)
+                </td>
+                <td>
+                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
+                    @*<a href="javascript:;" onclick="edit(@item.ID)">Asignar Profesor</a> |*@
+                    @Html.ActionLink("Asignar Profesor", "AssignTeacher", new { id = item.ID}) |
+                    <a href="javascript:;" onclick="deleteGroup(@item.ID)">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Create" />
+
+<div id="partials"></div>
+
+<script>
+    function edit(id) {
+        $.ajax({
+            url: '/Group/Edit',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#editGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+    function deleteGroup(id) {
+        $.ajax({
+            url: '/Group/Delete',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#deleteGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+    function assignTeacher(id) {
+        $.ajax({
+            url: '/Group/AssignTeacher',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#deleteGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+</script>

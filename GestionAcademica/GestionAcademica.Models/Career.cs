@@ -7,11 +7,11 @@ namespace GestionAcademica.Models
 {
     public class Career : Base
     {
-        [DisplayName("Código")]
+        [DisplayName("Código Carrera")]
         public string Code { get; set; }
         [DisplayName("Carrera")]
         public string CareerName { get; set; }
-        [DisplayName("Título")]
+        [DisplayName("Título Carrera")]
         public string DegreeName { get; set; }
     }
 }
