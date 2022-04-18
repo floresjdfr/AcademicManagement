@@ -30,9 +30,11 @@ namespace GestionAcademica.API.DataAccess
                 {
                     CommandType = CommandType.StoredProcedure
                 };
+                command.Parameters.Add(new SqlParameter("@ID", Student.IdStudent));
                 command.Parameters.Add(new SqlParameter("@Name", Student.Name));
                 command.Parameters.Add(new SqlParameter("@PhoneNumber", Student.PhoneNumber));
                 command.Parameters.Add(new SqlParameter("@Email", Student.Email));
+                command.Parameters.Add(new SqlParameter("@DateOfBirth", Student.DateOfBirth));
 
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
@@ -63,6 +65,7 @@ namespace GestionAcademica.API.DataAccess
                     response.Add(new Student
                     {
                         ID = reader.GetInt32("Pk_Student"),
+                        IdStudent = reader.GetString("ID"),
                         Name = reader.GetString("Name"),
                         PhoneNumber = reader.GetString("PhoneNumber"),
                         Email = reader.GetString("Email")
