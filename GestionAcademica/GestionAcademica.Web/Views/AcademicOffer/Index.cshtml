@@ -1,0 +1,29 @@
+﻿@model GestionAcademica.Web.ViewModels.AcademicOfferVM
+@using GestionAcademica.Models 
+
+
+@{
+    ViewData["Title"] = "Oferta Académica";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p class="text-right">
+    <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-primary">Agregar Nuevo Estudiante</a>
+</p>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-group">
+    <label asp-for="CareerCourse.Career.CareerName" class="control-label"></label>
+    <select class="form-control" asp-for="CareerCourse.Career.ID" asp-items="@(new SelectList(Model.CareerList, "ID", "CareerName"))">
+        <option>Seleccione Carrera</option>
+    </select>
+    <span asp-validation-for="CareerCourse.Career.CareerName" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="CareerCourse.Cycle" class="control-label"></label>
+    <select class="form-control" asp-for="CareerCourse.Cycle" asp-items="@(new SelectList(Model.CyclesList, "ID", "CareerName"))">
+        <option>Seleccione Ciclo</option>
+    </select>
+    <span asp-validation-for="Career.CareerName" class="text-danger"></span>
+</div>

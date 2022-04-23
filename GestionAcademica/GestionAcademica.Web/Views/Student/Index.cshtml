@@ -6,7 +6,7 @@
 
 <p class="text-right">
     <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-primary">Agregar Nuevo Estudiante</a>
-</p>>
+</p>
 
 <h1>Estudiantes</h1>
 <table class="table">
@@ -26,6 +26,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Student.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Student.Career.CareerName)
             </th>
             <th></th>
         </tr>
@@ -48,6 +51,16 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @if (item.Career != null)
+                    {
+                        @Html.DisplayFor(model => item.Career.CareerName)
+                    }
+                    else
+                    {
+                        <p>N/A</p>
+                    }
                 </td>
                 <td>
                     <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |

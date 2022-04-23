@@ -1,8 +1,8 @@
 --INSERT NEW Student
-CREATE OR ALTER PROCEDURE udpInsertStudent(@ID AS VARCHAR(50), @Name AS VARCHAR(50), @PhoneNumber AS VARCHAR(50), @Email AS VARCHAR(50), @DateOfBirth AS VARCHAR(50))
+CREATE OR ALTER PROCEDURE udpInsertStudent(@Fk_Career AS INT, @Fk_User AS INT, @ID AS VARCHAR(50), @Name AS VARCHAR(50), @PhoneNumber AS VARCHAR(50), @Email AS VARCHAR(50), @DateOfBirth AS VARCHAR(50))
 AS
 BEGIN
-	INSERT INTO [dbo].[Student] (ID, Name, PhoneNumber, Email, DateOfBirth) VALUES (@ID, @Name, @PhoneNumber, @Email, @DateOfBirth);
+	INSERT INTO [dbo].[Student] (Fk_Carreer, Fk_User, ID, Name, PhoneNumber, Email, DateOfBirth) VALUES (@Fk_Career, @Fk_User, @ID, @Name, @PhoneNumber, @Email, @DateOfBirth);
 END
 
 --UPDATE
@@ -50,6 +50,8 @@ BEGIN
 	SELECT  * 
     FROM    [dbo].[Student] s
     LEFT JOIN [dbo].Career c ON s.Fk_Carreer = c.Pk_Career  
+    LEFT JOIN [dbo].[User] u ON s.Fk_User = u.Pk_User 
+    LEFT JOIN [dbo].UserType ut ON u.Fk_UserType = ut.Pk_UserType 
     WHERE (@Pk_Student IS NULL OR s.Pk_Student = @Pk_Student) 
     AND (@Fk_Career IS NULL OR s.Fk_Carreer  = @Fk_Career)
     AND (@Fk_User IS NULL OR s.Fk_User = @Fk_User)

@@ -16,6 +16,7 @@ namespace GestionAcademica.API.DataAccess
     {
         #region Variables
         private readonly StudentService studentService = new StudentService();
+        private readonly UserService userService = new UserService();
         #endregion
 
         // GET: api/<StudentController>
@@ -48,10 +49,23 @@ namespace GestionAcademica.API.DataAccess
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Post([FromBody] Student value)
         {
-            var result = await studentService.InsertStudent(value);
-            if (result == false) return BadRequest();
+            User studentUser = new User
+            {
+                UserID = value.IdStudent,
+                Password = value.User.Password,
+                UserType = new UserType
+                {
+                    ID = (int)EnumUserType.Alumno
+                }
+            };
+            var resultUser = await userService.InsertUser(studentUser);
+            if (resultUser)
+                value.User = await userService.FindUser(new User { UserID = studentUser.UserID });
 
-            return Ok(result);
+            var resultStudent = await studentService.InsertStudent(value);
+            if (!resultStudent) return BadRequest();
+
+            return Ok(resultStudent);
         }
 
         // PUT api/<StudentController>/5

@@ -36,6 +36,9 @@ namespace GestionAcademica.API.DataAccess
                 command.Parameters.Add(new SqlParameter("@Email", Student.Email));
                 command.Parameters.Add(new SqlParameter("@DateOfBirth", Student.DateOfBirth));
 
+                command.Parameters.Add(new SqlParameter("@Fk_Career", Student.Career.ID));
+                command.Parameters.Add(new SqlParameter("@Fk_User", Student.User.ID));
+
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
                 if (rowsAffected > 0) response = true;
@@ -62,14 +65,36 @@ namespace GestionAcademica.API.DataAccess
                 var reader = await command.ExecuteReaderAsync();
                 while (reader.Read())
                 {
-                    response.Add(new Student
+                    var newStudent = new Student();
+                    if (!reader.IsDBNull("Fk_Carreer"))
+                        newStudent.Career = new Career
+                        {
+                            ID = reader.GetInt32("Pk_Career"),
+                            Code = reader.GetString("Code"),
+                            CareerName = reader.GetString("CareerName"),
+                            DegreeName = reader.GetString("DegreeName")
+                        };
+                    if (!reader.IsDBNull("Fk_User"))
                     {
-                        ID = reader.GetInt32("Pk_Student"),
-                        IdStudent = reader.GetString("ID"),
-                        Name = reader.GetString("Name"),
-                        PhoneNumber = reader.GetString("PhoneNumber"),
-                        Email = reader.GetString("Email")
-                    });
+                        newStudent.User = new User
+                        {
+                            ID = reader.GetInt32("Pk_User"),
+                            UserID = reader.GetString("ID"),
+                            Password = reader.GetString("Password"),
+                            UserType = new UserType
+                            {
+                                ID = reader.GetInt32("Pk_UserType"),
+                                TypeDescription = reader.GetString("TypeDescription")
+                            }
+                        };
+                    }
+                    newStudent.ID = reader.GetInt32("Pk_Student");
+                    newStudent.IdStudent = reader.GetString("ID");
+                    newStudent.Name = reader.GetString("Name");
+                    newStudent.PhoneNumber = reader.GetString("PhoneNumber");
+                    newStudent.Email = reader.GetString("Email");
+                    newStudent.DateOfBirth = reader.GetDateTime("DateOfBirth");
+                    response.Add(newStudent);
                 }
                 reader.Close();
 
@@ -100,13 +125,36 @@ namespace GestionAcademica.API.DataAccess
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.Read())
                 {
-                    response = (new Student
+                    var studentFound = new Student();
+                    if (!reader.IsDBNull("Fk_Carreer"))
+                        studentFound.Career = new Career
+                        {
+                            ID = reader.GetInt32("Pk_Career"),
+                            Code = reader.GetString("Code"),
+                            CareerName = reader.GetString("CareerName"),
+                            DegreeName = reader.GetString("DegreeName")
+                        };
+                    if (!reader.IsDBNull("Fk_User"))
                     {
-                        ID = reader.GetInt32("Pk_Student"),
-                        Name = reader.GetString("Name"),
-                        PhoneNumber = reader.GetString("PhoneNumber"),
-                        Email = reader.GetString("Email")
-                    });
+                        studentFound.User = new User
+                        {
+                            ID = reader.GetInt32("Pk_User"),
+                            UserID = reader.GetString("ID"),
+                            Password = reader.GetString("Password"),
+                            UserType = new UserType
+                            {
+                                ID = reader.GetInt32("Pk_UserType"),
+                                TypeDescription = reader.GetString("TypeDescription")
+                            }
+                        };
+                    }
+                    studentFound.ID = reader.GetInt32("Pk_Student");
+                    studentFound.IdStudent = reader.GetString("ID");
+                    studentFound.Name = reader.GetString("Name");
+                    studentFound.PhoneNumber = reader.GetString("PhoneNumber");
+                    studentFound.Email = reader.GetString("Email");
+                    studentFound.DateOfBirth = reader.GetDateTime("DateOfBirth");
+                    response = studentFound;
                 }
                 reader.Close();
 

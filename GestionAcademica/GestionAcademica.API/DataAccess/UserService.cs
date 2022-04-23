@@ -85,7 +85,7 @@ namespace GestionAcademica.API.DataAccess
 
             return response;
         }
-        public async Task<User> FindUser(int id)
+        public async Task<User> FindUser(User user)
         {
             try
             {
@@ -97,7 +97,9 @@ namespace GestionAcademica.API.DataAccess
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                command.Parameters.Add(new SqlParameter("@Pk_User", id));
+                command.Parameters.Add(new SqlParameter("@Pk_User", user.ID));
+                command.Parameters.Add(new SqlParameter("@ID", user.UserID));
+                command.Parameters.Add(new SqlParameter("@Password", user.Password));
 
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.Read())

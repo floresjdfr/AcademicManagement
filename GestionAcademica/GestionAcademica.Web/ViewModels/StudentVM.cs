@@ -10,5 +10,6 @@ namespace GestionAcademica.Web.ViewModels
     {
         public Student Student { get; set; }
         public List<Student> StudentList { get; set; }
+        public List<Career> CareersList { get; set; }
     }
 }

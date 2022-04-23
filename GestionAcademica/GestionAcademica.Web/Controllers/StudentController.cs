@@ -15,6 +15,7 @@ namespace GestionAcademica.Web.Controllers
     public class StudentController : Controller
     {
         private readonly string StudentUrl = "https://localhost:44367/api/Student/";
+        private readonly string careerUrl = "https://localhost:44367/api/career/";
         private readonly HttpClient httpClient = new HttpClient();
 
         // GET: StudentController
@@ -23,11 +24,19 @@ namespace GestionAcademica.Web.Controllers
             var model = new StudentVM();
             try
             {
+                //Students
                 var responseStudents = await httpClient.GetAsync(StudentUrl);
                 responseStudents.EnsureSuccessStatusCode();
 
                 var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
                 model.StudentList = JsonSerializer.Deserialize<List<Student>>(jsonStudents);
+
+                //Careers
+                var responseCareers = await httpClient.GetAsync(careerUrl);
+                responseCareers.EnsureSuccessStatusCode();
+
+                var jsonCareers = await responseCareers.Content.ReadAsStringAsync();
+                model.CareersList = JsonSerializer.Deserialize<List<Career>>(jsonCareers);
             }
             catch
             {
@@ -64,14 +73,14 @@ namespace GestionAcademica.Web.Controllers
         // GET: StudentController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            StudentVM model = new StudentVM();
+            Student model = new Student();
             try
             {
                 var responseStudent = await httpClient.GetAsync(StudentUrl + id.ToString());
                 responseStudent.EnsureSuccessStatusCode();
 
                 var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
-                model.Student = JsonSerializer.Deserialize<Student>(jsonStudent);
+                model = JsonSerializer.Deserialize<Student>(jsonStudent);
             }
             catch
             {

@@ -37,7 +37,7 @@ namespace GestionAcademica.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await userService.FindUser(id);
+            var result = await userService.FindUser(new User { ID = id });
             if (result == null) return NotFound();
             result.Password = null;
 

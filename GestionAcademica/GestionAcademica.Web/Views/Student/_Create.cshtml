@@ -37,6 +37,18 @@
                         <input asp-for="Student.DateOfBirth" class="form-control" />
                         <span asp-validation-for="Student.DateOfBirth" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="Student.User.Password" class="control-label"></label>
+                        <input asp-for="Student.User.Password" class="form-control" />
+                        <span asp-validation-for="Student.User.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Student.Career.CareerName" class="control-label"></label>
+                        <select class="form-control" asp-for="Student.Career.ID" asp-items="@(new SelectList(Model.CareersList, "ID", "CareerName"))">
+                            <option>Seleccione Carrera</option>
+                        </select>
+                        <span asp-validation-for="Student.Career.CareerName" class="text-danger"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Guardar Estudiante</button>

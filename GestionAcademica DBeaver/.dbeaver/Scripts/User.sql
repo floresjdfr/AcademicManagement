@@ -5,7 +5,16 @@ CREATE OR ALTER PROCEDURE udpInsertUser(
 	@Fk_UserType as INT)
 AS
 BEGIN
-    INSERT INTO [dbo].[User] VALUES (@Fk_UserType, @ID, @Password);
+	DECLARE @UsersCount AS INT
+	SET @UsersCount = (SELECT COUNT(*) FROM [dbo].[User] u WHERE u.ID = @ID);
+	IF @UsersCount = 0
+		BEGIN
+			INSERT INTO [dbo].[User] VALUES (@Fk_UserType, @ID, @Password);	
+		END	
+	ELSE
+		BEGIN
+			THROW 51000, 'An user with the same username already exists', 1; 
+		END
 END
 
 --UPDATE
