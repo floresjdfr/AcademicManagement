@@ -137,7 +137,7 @@ namespace GestionAcademica.API.DataAccess
                             } : null,
                             ID = reader.GetInt32("Pk_Cycle"),
                             Year = reader.GetInt32("Year"),
-                            Number = reader.GetInt32("Number"),
+                            Number = reader.GetInt32("CycleNumber"),
                             StartDate = reader.GetDateTime("StartDate"),
                             EndDate = reader.GetDateTime("EndDate"),
                         } : null,
@@ -149,7 +149,7 @@ namespace GestionAcademica.API.DataAccess
                             PhoneNumber = reader.GetString("PhoneNumber"),
                             Email = reader.GetString("Email")
                         } : null,
-                        Number = reader.GetString("Number"),
+                        Number = reader.GetString("GroupNumber"),
                         Schedule = reader.GetString("Schedule"),
                         ID = reader.GetInt32("Pk_Group")
                     });

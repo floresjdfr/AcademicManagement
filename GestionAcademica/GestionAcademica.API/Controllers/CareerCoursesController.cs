@@ -42,6 +42,17 @@ namespace GestionAcademica.API.Controllers
             return Ok(result);
         }
 
+        // GET api/GetByCareer/<CareerCoursesController>/5
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("GetByCareerAndCycle/{careerId}/{cycle}")]
+        public async Task<IActionResult> GetByCareerAndCycle(int careerId, int cycle)
+        {
+            var result = await careerCoursesService.FindCareerCoursesByCareerAndCycle(careerId, cycle);
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
         // POST api/<CareerCoursesController>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

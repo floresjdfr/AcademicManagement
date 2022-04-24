@@ -1,0 +1,120 @@
+﻿@model GestionAcademica.Web.ViewModels.AcademicOfferVM
+@{
+    ViewData["Title"] = "Grupos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Grupos</h1>
+<p class="text-right">
+    <a data-target="#addNewGroupModal" data-toggle="modal" href="#addNewGroupModal" class="btn btn-primary">Agregar Nuevo Grupo</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Schedule)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Teacher.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Cycle.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Cycle.Year)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CourseGroupsList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Group.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Group.Schedule)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Group.Teacher.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Group.Cycle.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Group.Cycle.Year)
+                </td>
+                <td>
+                    <a href="javascript:;" onclick="edit(@item.Group.ID)">Editar</a> |
+                    <a href="javascript:;" onclick="deleteGroup(@item.ID)">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="partials"></div>
+
+<partial name="_CreateGroup"/>
+
+<script>
+    function edit(id) {
+        $.ajax({
+            url: '/AcademicOffer/EditCourseGroup',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#editGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+    function deleteGroup(id) {
+        $.ajax({
+            url: '/Group/Delete',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#deleteGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+    function assignTeacher(id) {
+        $.ajax({
+            url: '/Group/AssignTeacher',
+            type: 'GET',
+            data: {
+                'id': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#deleteGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+</script>

@@ -1,5 +1,4 @@
 ﻿@model GestionAcademica.Web.ViewModels.AcademicOfferVM
-@using GestionAcademica.Models 
 
 
 @{
@@ -7,23 +6,52 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<p class="text-right">
-    <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-primary">Agregar Nuevo Estudiante</a>
-</p>
+<form asp-antiforgery="true" action="Courses" method="post" class="justify-content-center" id="formGetCourses">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-row align-items-end">
+        <div class="col">
+            <div class="form-group">
+                <label asp-for="CareerCourse.Career.CareerName" class="control-label"></label>
+                <select class="form-control" asp-for="CareerCourse.Career.ID" asp-items="@(new SelectList(Model.CareerList, "ID", "CareerName"))">
+                    <option>Seleccione Carrera</option>
+                </select>
+                <span asp-validation-for="CareerCourse.Career.CareerName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label asp-for="CareerCourse.Cycle" class="control-label"></label>
+                <select class="form-control" asp-for="CareerCourse.Cycle" asp-items="@(new SelectList(Model.SelectList, "Value", "Text"))">
+                    <option>Seleccione Ciclo</option>
+                </select>
+                <span asp-validation-for="Career.CareerName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Cargar Cursos</button>
+            </div>
+        </div>
+    </div>
+</form>
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<div class="form-group">
-    <label asp-for="CareerCourse.Career.CareerName" class="control-label"></label>
-    <select class="form-control" asp-for="CareerCourse.Career.ID" asp-items="@(new SelectList(Model.CareerList, "ID", "CareerName"))">
-        <option>Seleccione Carrera</option>
-    </select>
-    <span asp-validation-for="CareerCourse.Career.CareerName" class="text-danger"></span>
-</div>
+<div id="coursesList"></div>
 
-<div class="form-group">
-    <label asp-for="CareerCourse.Cycle" class="control-label"></label>
-    <select class="form-control" asp-for="CareerCourse.Cycle" asp-items="@(new SelectList(Model.CyclesList, "ID", "CareerName"))">
-        <option>Seleccione Ciclo</option>
-    </select>
-    <span asp-validation-for="Career.CareerName" class="text-danger"></span>
-</div>
+<script>
+    $(document).ready(function () {
+        $("#formGetCourses").submit(function (e) {
+            e.preventDefault();
+            var form = $(this).serialize();
+            $.ajax({
+                url: '/AcademicOffer/Courses',
+                type: 'POST',
+                data: form,
+                dataType: 'html',
+                success: function (data) {
+                    $("#coursesList").html(data);
+                }
+            });
+
+        });
+    });
+</script>

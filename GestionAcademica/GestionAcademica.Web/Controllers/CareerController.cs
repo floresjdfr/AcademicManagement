@@ -15,7 +15,7 @@ namespace GestionAcademica.Web.Controllers
     public class CareerController : Controller
     {
         private readonly string careerUrl = "https://localhost:44367/api/career/";
-        private readonly string careerCoursesUrl = "https://localhost:44367/api/careercourses/";
+        private readonly string careerCoursesUrl = "https://localhost:44367/api/CareerCourses/";
         private readonly HttpClient httpClient = new HttpClient();
         // GET: CareerController
         public async Task<ActionResult> Index()
@@ -77,10 +77,17 @@ namespace GestionAcademica.Web.Controllers
         {
             try
             {
-                var jsonText = JsonSerializer.Serialize(career);
-                var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(careerUrl, content);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+
+
+                    var jsonText = JsonSerializer.Serialize(career);
+                    var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync(careerUrl, content);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                    return View(career);
             }
             catch
             {

@@ -13,6 +13,7 @@ namespace GestionAcademica.API.DataAccess
         private static readonly string addCourseToCareer = "udpAddCourseToCareer";
         private static readonly string getCoursesByCareer = "udpFindCoursesByCareer";
         private static readonly string findCareerCourse = "udpFindCareerCourse";
+        private static readonly string findCareerCoursesByCareerAndCycle = "udpFindCareerCoursesByCareerAndCicle";
         private static readonly string deleteCourseFromCareer = "udpDeleteCourseFromCareer";
         private static readonly string updateCareerCourse = "udpUpdateCourseAndCareer";
         private SqlCommand command = null;
@@ -91,6 +92,59 @@ namespace GestionAcademica.API.DataAccess
                         Cycle = reader.GetInt32("Cycle")
                     };
                     response = tmpCareerCourse;
+                }
+                reader.Close();
+
+                Disconnect();
+                return response;
+            }
+            catch
+            {
+                Disconnect();
+                return null;
+            }
+        }
+        public async Task<List<CareerCourses>> FindCareerCoursesByCareerAndCycle(int careerId, int cycle)
+        {
+            List<CareerCourses> response = new List<CareerCourses>();
+            try
+            {
+                Connect();
+
+                command = new SqlCommand(findCareerCoursesByCareerAndCycle, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                command.Parameters.Add(new SqlParameter("@Fk_Career", careerId));
+                command.Parameters.Add(new SqlParameter("@Cycle", cycle));
+
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    Course tmpCourse = new Course
+                    {
+                        ID = reader.GetInt32("Pk_Course"),
+                        Code = reader.GetString("Code"),
+                        Name = reader.GetString("Name"),
+                        Credits = reader.GetInt32("Credits"),
+                        WeeklyHours = reader.GetInt32("WeeklyHours")
+                    };
+                    Career tmpCareer = new Career
+                    {
+                        ID = reader.GetInt32("Fk_Career"),
+                        Code = reader.GetString("Code"),
+                        CareerName = reader.GetString("CareerName"),
+                        DegreeName = reader.GetString("DegreeName")
+                    };
+                    CareerCourses tmpCareerCourse = new CareerCourses
+                    {
+                        ID = reader.GetInt32("Pk_CareerCourses"),
+                        Course = tmpCourse,
+                        Career = tmpCareer,
+                        Year = reader.GetInt32("Year"),
+                        Cycle = reader.GetInt32("Cycle")
+                    };
+                    response.Add(tmpCareerCourse);
                 }
                 reader.Close();
 

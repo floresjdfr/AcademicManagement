@@ -8,6 +8,16 @@ BEGIN
 	WHERE Pk_CareerCourses = @Pk_CareerCourse
 END
 
+--SEARCH CareerCourses by Pk_Career and [Cycle]
+ CREATE OR ALTER PROCEDURE udpFindCareerCoursesByCareerAndCicle(@Fk_Career AS INT, @Cycle AS INT)
+AS
+BEGIN
+	SELECT * FROM [dbo].CareerCourses cc
+		LEFT JOIN [dbo].Career c ON cc.Fk_Career = c.Pk_Career 
+		LEFT JOIN [dbo].Course c2 ON cc.Fk_Course = c2.Pk_Course
+	WHERE cc.Fk_Career = @Fk_Career AND cc.[Cycle] = @Cycle;
+END
+
 
 --SEARCH
 CREATE OR ALTER PROCEDURE udpFindCoursesByCareer(@Pk_Career AS INT)

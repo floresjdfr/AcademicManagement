@@ -47,7 +47,9 @@ CREATE OR ALTER PROCEDURE udpFindGroup(
 )
 AS
 BEGIN
-	SELECT  * 
+	SELECT  *, 
+	g.[Number] AS GroupNumber,
+	c2.[Number] AS CycleNumber
     FROM    [dbo].[Group] g 
     LEFT JOIN [dbo].Teacher t ON g.Fk_Teacher = t.Pk_Teacher 
     LEFT JOIN [dbo].[Cycle] c2  ON g.Fk_Cycle = c2.Pk_Cycle 

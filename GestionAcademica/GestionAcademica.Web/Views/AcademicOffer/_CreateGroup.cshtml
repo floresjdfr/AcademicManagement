@@ -1,0 +1,45 @@
+﻿@model GestionAcademica.Web.ViewModels.AcademicOfferVM
+<!-- Modal -->
+<div class="modal fade" id="addNewGroupModal" tabindex="-1" aria-labelledby="addNewGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="CreateCourseGroup">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Grupo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="CourseGroup.Group.Number" class="control-label"></label>
+                        <input asp-for="CourseGroup.Group.Number" class="form-control" />
+                        <span asp-validation-for="CourseGroup.Group.Number" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CourseGroup.Group.Schedule" class="control-label"></label>
+                        <input asp-for="CourseGroup.Group.Schedule" class="form-control" />
+                        <span asp-validation-for="CourseGroup.Group.Schedule" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CourseGroup.Group.Teacher.ID" class="control-label"></label>
+                        <select class="form-control" asp-for="CourseGroup.Group.Teacher.ID" asp-items="@(new SelectList(Model.TeachersList, "ID", "Name"))">
+                            <option>Seleccione Profesor</option>
+                        </select>
+                        <span asp-validation-for="CourseGroup.Group.Teacher.ID" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="CourseGroup.Course.ID"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar Grupo</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
