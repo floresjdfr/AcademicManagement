@@ -177,6 +177,10 @@ namespace GestionAcademica.Web.Controllers
                 responseStudent.EnsureSuccessStatusCode();
                 var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
                 model.GroupStudent = new GroupStudents { Student = JsonSerializer.Deserialize<Student>(jsonStudent) };
+
+                model.CourseGroupsDict = model.CourseGroupsList
+                    .GroupBy(item => item.Course.ID)
+                    .ToDictionary(group => model.CourseGroupsList.Where( item => item.Course.ID == group.Key).FirstOrDefault().Course, group => group.ToList());
             }
             catch
             {

@@ -15,5 +15,6 @@ namespace GestionAcademica.Web.ViewModels
         public GroupStudents GroupStudent { get; set; }
         public List<CourseGroups> CourseGroupsList { get; set; }
         public CourseGroups CourseGroup { get; set; }
+        public Dictionary<Course,List<CourseGroups>> CourseGroupsDict { get; set; }
     }
 }

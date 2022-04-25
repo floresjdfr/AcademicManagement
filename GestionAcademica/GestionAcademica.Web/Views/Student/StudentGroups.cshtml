@@ -19,7 +19,7 @@
     <dd class="col-sm-10">@Html.DisplayFor(model => model.GroupStudent.Student.Career.CareerName)</dd>
 </dl>
 
-<p class="text-right"><button class="btn btn-outline-primary">Matricular Curso</button></p>
+<p class="text-right"><button class="btn btn-outline-primary" onclick="showGroups(@Model.GroupStudent.Student.ID)">Matricular Curso</button></p>
 
 <h3>Cursos Matriculados</h3>
 <table class="table">
@@ -50,3 +50,26 @@
         }
     </tbody>
 </table>
+
+<div id="partials"></div>
+
+<script>
+    function showGroups(studentID) {
+        $.ajax({
+            url: '/Student/AvailableGroups',
+            type: 'GET',
+            data: {
+                'studentID': studentID
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#enrollGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+</script>
