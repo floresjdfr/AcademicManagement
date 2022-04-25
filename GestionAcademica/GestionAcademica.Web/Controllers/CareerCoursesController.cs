@@ -94,5 +94,18 @@ namespace GestionAcademica.Web.Controllers
             }
         }
 
+        public async Task<ActionResult> EnrollGroups(int careerID, int studentID)
+        {
+            try
+            {
+                
+            }
+            catch
+            {
+
+            }
+            return null;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GestionAcademica.Models;
+using GestionAcademica.Web.Helpers;
 using GestionAcademica.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,7 @@ namespace GestionAcademica.Web.Controllers
 
                 model.UserList = JsonSerializer.Deserialize<List<User>>(jsonUsers);
                 model.UserTypesList = JsonSerializer.Deserialize<List<UserType>>(jsonUserTypes);
+
             }
             catch
             {

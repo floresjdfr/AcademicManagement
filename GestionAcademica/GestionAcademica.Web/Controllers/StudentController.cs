@@ -16,6 +16,8 @@ namespace GestionAcademica.Web.Controllers
     {
         private readonly string StudentUrl = "https://localhost:44367/api/Student/";
         private readonly string careerUrl = "https://localhost:44367/api/career/";
+        private readonly string groupStudentsUrl = "https://localhost:44367/api/GroupStudents/";
+        private readonly string enrollmentUrl = "https://localhost:44367/api/Enrollment/";
         private readonly HttpClient httpClient = new HttpClient();
 
         // GET: StudentController
@@ -44,14 +46,6 @@ namespace GestionAcademica.Web.Controllers
             }
             return View(model);
         }
-
-        // GET: StudentController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-
         // POST: StudentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -69,7 +63,6 @@ namespace GestionAcademica.Web.Controllers
                 return View();
             }
         }
-
         // GET: StudentController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
@@ -137,5 +130,84 @@ namespace GestionAcademica.Web.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        // GET: StudentController/StudentGroups/5
+        public async Task<ActionResult> StudentGroups(int studentID)
+        {
+            StudentVM model = new StudentVM();
+            try
+            {
+                //Student Groups
+                var url = enrollmentUrl + "GetStudentGroupsOfCurrentCycle/" + studentID;
+                var responseStudentGroups = await httpClient.GetAsync(url);
+                responseStudentGroups.EnsureSuccessStatusCode();
+                var jsonGroups = await responseStudentGroups.Content.ReadAsStringAsync();
+                model.CourseGroupsList = JsonSerializer.Deserialize<List<CourseGroups>>(jsonGroups);
+
+                //Student
+                var urlStudent = StudentUrl + studentID;
+                var responseStudent = await httpClient.GetAsync(urlStudent);
+                responseStudent.EnsureSuccessStatusCode();
+                var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
+                model.GroupStudent = new GroupStudents { Student = JsonSerializer.Deserialize<Student>(jsonStudent) };
+            }
+            catch
+            {
+
+            }
+            return View(model);
+        }
+
+        // GET: StudentController/AvailableGroups/5
+        public async Task<ActionResult> AvailableGroups(int studentID)
+        {
+            StudentVM model = new StudentVM();
+            try
+            {
+                //Available Groups
+                var urlGroups = enrollmentUrl + "GetAvailableGroups/" + studentID;
+                var responseAvailableGroups = await httpClient.GetAsync(urlGroups);
+                responseAvailableGroups.EnsureSuccessStatusCode();
+                var jsonGroups = await responseAvailableGroups.Content.ReadAsStringAsync();
+                model.CourseGroupsList = JsonSerializer.Deserialize<List<CourseGroups>>(jsonGroups);
+
+                //Student
+                var urlStudent = StudentUrl + studentID;
+                var responseStudent = await httpClient.GetAsync(urlStudent);
+                responseStudent.EnsureSuccessStatusCode();
+                var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
+                model.GroupStudent = new GroupStudents { Student = JsonSerializer.Deserialize<Student>(jsonStudent) };
+            }
+            catch
+            {
+
+            }
+            return PartialView("_AvailableCourses", model);
+        }
+
+
+
+        // POST: StudentController/EnrollGroup/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EnrollGroup(StudentVM model, int groupID)
+        {
+            try
+            {
+                model.GroupStudent.Group = new Group { ID = groupID };
+
+                var groupText = JsonSerializer.Serialize(model.GroupStudent);
+                var groupContent = new StringContent(groupText, Encoding.UTF8, "application/json");
+                var responseGroup = await httpClient.PostAsync(groupStudentsUrl, groupContent);
+                responseGroup.EnsureSuccessStatusCode();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
     }
 }

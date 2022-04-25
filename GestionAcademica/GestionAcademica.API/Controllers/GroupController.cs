@@ -62,7 +62,7 @@ namespace GestionAcademica.API.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] Group value)
         {
             if (id != value.ID) return BadRequest();
-            var result = await groupService.UpdateGroup(id, value, (int)GroupUpdateType.NumberAndSchedule);
+            var result = await groupService.UpdateGroup(id, value);
             if (result == false) return BadRequest();
 
             return Ok(result);
@@ -74,7 +74,7 @@ namespace GestionAcademica.API.Controllers
         public async Task<IActionResult> PutTeacher(int id, [FromBody] Group value)
         {
             if (id != value.ID) return BadRequest();
-            var result = await groupService.UpdateGroup(id, value, (int)GroupUpdateType.Teacher);
+            var result = await groupService.UpdateGroup(id, value);
             if (result == false) return BadRequest();
 
             return Ok(result);

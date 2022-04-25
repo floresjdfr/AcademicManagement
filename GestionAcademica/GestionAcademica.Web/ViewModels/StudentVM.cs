@@ -11,5 +11,9 @@ namespace GestionAcademica.Web.ViewModels
         public Student Student { get; set; }
         public List<Student> StudentList { get; set; }
         public List<Career> CareersList { get; set; }
+        public List<GroupStudents> GroupStudentsList { get; set; }
+        public GroupStudents GroupStudent { get; set; }
+        public List<CourseGroups> CourseGroupsList { get; set; }
+        public CourseGroups CourseGroup { get; set; }
     }
 }

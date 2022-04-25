@@ -64,6 +64,7 @@
                 </td>
                 <td>
                     <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
+                    @Html.ActionLink("Matricular", "StudentGroups", new { studentID = item.ID }) |
                     <a href="javascript:;" onclick="deleteStudent(@item.ID)">Eliminar</a>
                 </td>
             </tr>

@@ -6,35 +6,20 @@ BEGIN
 END
 
 --UPDATE
---MODIFYTYPE => 1 = Number and Schedule, 2 = Teacher, 3 = Cycle
 CREATE OR ALTER PROCEDURE udpModifyGroup(
 	@Pk_Group AS INT,
 	@Fk_Teacher AS INT = NULL,
 	@Fk_Cycle AS INT = NULL,
 	@Number AS VARCHAR(50) = NULL,
-	@Schedule AS VARCHAR(50) = NULL,
-	@ModifyType AS INT
+	@Schedule AS VARCHAR(50) = NULL
 )
 AS
 BEGIN
-	IF (@ModifyType = 1)
-	BEGIN 
-		UPDATE [DBO].[Group] SET [Number] = @Number, Schedule = @Schedule WHERE Pk_Group = @Pk_Group;
-	END
-	IF(@ModifyType = 2)
-	BEGIN
-		UPDATE [dbo].[Group] 
-		SET 
-			Fk_Teacher = @Fk_Teacher
-		WHERE Pk_Group  = @Pk_Group;
-	END
-	IF(@ModifyType = 3)
-	BEGIN
-		UPDATE [dbo].[Group] 
-		SET 
-			Fk_Cycle = @Fk_Cycle
-		WHERE Pk_Group  = @Pk_Group;
-	END
+	UPDATE [DBO].[Group] SET 
+		[Number] = @Number, 
+		Schedule = @Schedule,
+		Fk_Teacher = @Fk_Teacher
+	WHERE Pk_Group = @Pk_Group;
 END
 
 --SEARCH

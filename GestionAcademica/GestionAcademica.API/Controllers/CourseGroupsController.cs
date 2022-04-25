@@ -30,18 +30,32 @@ namespace GestionAcademica.API.Controllers
             return Ok(result);
         }
 
+        //// GET: api/<CourseGroupsController>/GetByCurrentCycle/
+        //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        //[ProducesResponseType((int)HttpStatusCode.OK)]
+        //[HttpGet("GetByCurrentCycle/")]
+        //public async Task<IActionResult> GetByCurrentCycle()
+        //{
+        //    var result = await courseGroupsService.FindCourseGroupsByCurrentCycle();
+        //    if (result == null) return BadRequest();
+        //    var dict = result.GroupBy(item => item.Course.)
+        //    return Ok(result);
+        //}
+
         // GET api/<CourseGroupsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var result = await courseGroupsService.FindCourseGroupsByID(id);
+            if (result == null) return BadRequest();
+            return Ok(result);
         }
 
         // POST api/<CourseGroupsController>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<ActionResult> Post([FromBody] CourseGroups value)
+        public async Task<IActionResult> Post([FromBody] CourseGroups value)
         {
             var result = await courseGroupsService.AddGroupToCourse(value);
             if (result == false) return BadRequest();
@@ -55,9 +69,14 @@ namespace GestionAcademica.API.Controllers
         }
 
         // DELETE api/<CourseGroupsController>/5
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var result = await courseGroupsService.DeleteCourseFromCareer(id);
+            if (result == false) return BadRequest();
+            return Ok(result);
         }
     }
 }

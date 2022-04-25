@@ -55,6 +55,8 @@ namespace GestionAcademica.Web.Controllers
 
             return View(model);
         }
+
+        // POST: GroupController/Courses
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Courses(AcademicOfferVM model)
@@ -82,6 +84,8 @@ namespace GestionAcademica.Web.Controllers
             var model = new AcademicOfferVM();
             try
             {
+                TempData["CourseID"] = id;
+
                 //Course
                 var newCourseUrl = courseUrl + id;
                 var responseCourse = await httpClient.GetAsync(newCourseUrl);
@@ -101,11 +105,13 @@ namespace GestionAcademica.Web.Controllers
                 responseTeachers.EnsureSuccessStatusCode();
                 var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
                 model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
+
             }
             catch
             {
 
             }
+
             return View(model);
         }
         public async Task<ActionResult> EditCourseGroup(int id)
@@ -125,6 +131,7 @@ namespace GestionAcademica.Web.Controllers
                 responseTeachers.EnsureSuccessStatusCode();
                 var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
                 model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
+
             }
             catch
             {
@@ -133,7 +140,9 @@ namespace GestionAcademica.Web.Controllers
             return PartialView("_EditGroup", model);
         }
 
+        // POST: GroupController/EditCourseGroup
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> EditCourseGroup(AcademicOfferVM model)
         {
             try
@@ -143,19 +152,18 @@ namespace GestionAcademica.Web.Controllers
                 var jsonText = JsonSerializer.Serialize(model.Group);
                 var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
                 var responseGroup = await httpClient.PutAsync(newGroupUrl, content);
-               
-               
             }
             catch
             {
 
             }
-            return RedirectToAction(nameof(Index));
+            var courseID = TempData["CourseID"] as int?;
+            return RedirectToAction("CourseGroups", new { id = courseID });
         }
 
 
 
-        // POST: GroupController/CreateGroup
+        // POST: GroupController/CreateCourseGroup
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateCourseGroup(AcademicOfferVM model)
@@ -165,12 +173,54 @@ namespace GestionAcademica.Web.Controllers
                 var jsonText = JsonSerializer.Serialize(model.CourseGroup);
                 var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync(courseGroupsUrl, content);
-                return RedirectToAction("CourseGroups", new { id = model.CourseGroup.Course.ID });
+
+                var courseID = TempData["CourseID"] as int?;
+                return RedirectToAction("CourseGroups", new { id = courseID });
             }
             catch
             {
                 return View();
             }
+        }
+
+        public async Task<ActionResult> DeleteCourseGroup(int id)
+        {
+            var model = new AcademicOfferVM();
+            try
+            {
+                //CourseGroup
+                var newCourseGroupUrl = courseGroupsUrl + id;
+                var responseCourseGroup = await httpClient.GetAsync(newCourseGroupUrl);
+                responseCourseGroup.EnsureSuccessStatusCode();
+                var courseGroupJson = await responseCourseGroup.Content.ReadAsStringAsync();
+                model.CourseGroup = JsonSerializer.Deserialize<CourseGroups>(courseGroupJson);
+
+                
+            }
+            catch
+            {
+
+            }
+            return PartialView("_DeleteGroup", model);
+        }
+        // POST: GroupController/CreateCourseGroup
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteCourseGroup(AcademicOfferVM model, int id)
+        {
+            try
+            {
+                var newUrl = courseGroupsUrl + id;
+                var response = await httpClient.DeleteAsync(newUrl);
+
+            }
+            catch
+            {
+
+            }
+            var courseID = TempData["CourseID"] as int?;
+            return RedirectToAction("CourseGroups", new { id = courseID });
+
         }
     }
 }

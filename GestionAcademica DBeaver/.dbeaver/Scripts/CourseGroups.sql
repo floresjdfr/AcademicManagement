@@ -34,6 +34,34 @@ BEGIN
 		LEFT JOIN CycleState cs ON c2.Fk_CycleState = cs.Pk_CycleState 
 	WHERE Fk_Course = @Fk_Course;
 END
+CREATE OR ALTER PROCEDURE udpFindCourseGroupByID(@Pk_CourseGroups AS INT)
+AS 
+BEGIN 
+	SELECT *,
+	c2.[Number] AS CycleNumber,
+	t.Name AS TeacherName
+	FROM CourseGroups cg
+		LEFT JOIN Course c ON  cg.Fk_Course  = c.Pk_Course 
+		LEFT JOIN [group] g ON cg.Fk_Group = g.Pk_Group 
+		LEFT JOIN Teacher t ON g.Fk_Teacher = t.Pk_Teacher 
+		LEFT JOIN [Cycle] c2 ON g.Fk_Cycle = c2.Pk_Cycle 
+		LEFT JOIN CycleState cs ON c2.Fk_CycleState = cs.Pk_CycleState 
+	WHERE Pk_CourseGroups = @Pk_CourseGroups;
+END
+
+--Find the CourseGroups of current Cycle
+CREATE OR ALTER PROCEDURE udpFindCourseGroupsCurrentCycle
+AS 
+BEGIN 
+	SELECT *
+	FROM CourseGroups cg
+		LEFT JOIN Course c ON  cg.Fk_Course  = c.Pk_Course 
+		LEFT JOIN [group] g ON cg.Fk_Group = g.Pk_Group
+		LEFT JOIN [Cycle] c2 ON g.Fk_Cycle = c2.Pk_Cycle 
+		LEFT JOIN CycleState cs ON c2.Fk_CycleState = cs.Pk_CycleState 
+	WHERE c2.Fk_CycleState = 1;
+END
+
 
 --INSERT COURSE AND THEN ADD IT TO CAREER
 CREATE OR ALTER PROCEDURE udpAddGroupToCourse(
@@ -88,9 +116,13 @@ END
 
 
 
--- --DELETE
--- CREATE OR ALTER PROCEDURE udpDeleteCourseFromCareer(@Pk_CourseGroups AS INT)
--- AS 
--- BEGIN
--- 	DELETE [dbo].CourseGroups WHERE Pk_CourseGroups = @Pk_CourseGroups;
--- END
+--DELETE
+CREATE OR ALTER PROCEDURE udpDeleteGroupFromCourse(@Pk_CourseGroups AS INT)
+AS 
+BEGIN
+	DECLARE @groupID AS INT;
+	
+	SET @groupID = (select cg.Fk_Group  from [dbo].[CourseGroups] cg where Pk_CourseGroups = @Pk_CourseGroups);
+	DELETE [dbo].[Group] WHERE Pk_Group = @groupID;
+	DELETE [dbo].CourseGroups WHERE Pk_CourseGroups = @Pk_CourseGroups;
+END

@@ -168,7 +168,7 @@ namespace GestionAcademica.API.DataAccess
         #endregion
 
         #region Update
-        public async Task<bool> UpdateGroup(int GroupId, Group group, int type)
+        public async Task<bool> UpdateGroup(int GroupId, Group group)
         {
             bool response = false;
             try
@@ -184,7 +184,6 @@ namespace GestionAcademica.API.DataAccess
                 if (group.Cycle != null) command.Parameters.Add(new SqlParameter("@Fk_Cycle", group.Cycle.ID));
                 command.Parameters.Add(new SqlParameter("@Number", group.Number));
                 command.Parameters.Add(new SqlParameter("@Schedule", group.Schedule));
-                command.Parameters.Add(new SqlParameter("@ModifyType", type));
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
                 if (rowsAffected > 0) response = true;
