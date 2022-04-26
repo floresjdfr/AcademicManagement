@@ -48,3 +48,42 @@ BEGIN
     WHERE
         Pk_Teacher = @Pk_Teacher;
 END
+
+
+-- Get teacher groups
+create or alter procedure udpFindTeacherGroups(@pk_teacher as int, @pk_cycleState as int)
+as
+begin 
+	select cg.*, c.*, g.*
+	from CourseGroups cg
+	left join Course c on cg.Fk_Course = c.Pk_Course 
+	left join [Group] g on cg.Fk_Group = g.Pk_Group 
+	left join Teacher t on g.Fk_Teacher = t.Pk_Teacher 
+	left join [Cycle] c2 on g.Fk_Cycle = c2.Pk_Cycle 
+	where g.Fk_Teacher = @pk_teacher and c2.Fk_CycleState = @pk_cycleState and cg.Fk_Group = g.Pk_Group;
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,6 +14,7 @@ namespace GestionAcademica.API.DataAccess
         private static readonly string updateTeacher = "udpModifyTeacher";
         private static readonly string deleteTeacher = "udpDeleteTeacher";
         private static readonly string listTeachers = "udpFindTeacher";
+        private static readonly string findTeacherGroups = "udpFindTeacherGroups";
         private SqlCommand command = null;
 
         public TeacherService() { }
@@ -107,6 +108,57 @@ namespace GestionAcademica.API.DataAccess
                         PhoneNumber = reader.GetString("PhoneNumber"),
                         Email = reader.GetString("Email")
                     });
+                }
+                reader.Close();
+
+                Disconnect();
+                return response;
+            }
+            catch
+            {
+                Disconnect();
+                return null;
+            }
+        }
+        public async Task<List<CourseGroups>> FindTeacherGroups(int teacherID, int cycleStateID = 1)
+        {
+            try
+            {
+                List<CourseGroups> response = new List<CourseGroups>();
+
+                Connect();
+
+                command = new SqlCommand(findTeacherGroups, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                command.Parameters.Add(new SqlParameter("@pk_teacher", teacherID));
+                command.Parameters.Add(new SqlParameter("@pk_cycleState", cycleStateID));
+
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    Course tmpCourse = new Course
+                    {
+                        ID = reader.GetInt32("Pk_Course"),
+                        Code = reader.GetString("Code"),
+                        Name = reader.GetString("Name"),
+                        Credits = reader.GetInt32("Credits"),
+                        WeeklyHours = reader.GetInt32("WeeklyHours")
+                    };
+                    Group tmpGroup = new Group
+                    {
+                        ID = reader.GetInt32("Pk_Group"),
+                        Number = reader.GetString("Number"),
+                        Schedule = reader.GetString("Schedule")
+                    };
+                    CourseGroups tmpCareerCourse = new CourseGroups
+                    {
+                        ID = reader.GetInt32("Pk_CourseGroups"),
+                        Course = tmpCourse,
+                        Group = tmpGroup
+                    };
+                    response.Add(tmpCareerCourse);
                 }
                 reader.Close();
 

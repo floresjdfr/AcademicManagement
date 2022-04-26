@@ -43,6 +43,56 @@ namespace GestionAcademica.API.Controllers
             return Ok(result);
         }
 
+        // GET api/<TeacherController>/GetTeacherGroups/1/11
+        [HttpGet("GetTeacherGroups/{teacherID}/{courseID}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetTeacherGroups(int teacherID, int courseID)
+        {
+            try
+            {
+                var result = await teacherService.FindTeacherGroups(teacherID);//Current cycle is default = 1
+                if (result == null) throw new Exception();
+                
+                var groupedResult = result
+                    .GroupBy(item => item.Course.ID)
+                    .ToDictionary(group => group.Key, group => group.Select(item => item.Group).ToList());
+
+                var response = groupedResult.ContainsKey(courseID) ? groupedResult[courseID] : new List<Group>();
+
+                return Ok(response);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        // GET api/<TeacherController>/GetTeacherGroups/1/11
+        [HttpGet("GetTeacherCourses/{teacherID}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetTeacherCourses(int teacherID)
+        {
+            try
+            {
+                var result = await teacherService.FindTeacherGroups(teacherID);//Current cycle is default = 1
+                if (result == null) throw new Exception();
+
+                var groupedResult = result
+                    .GroupBy(item => item.Course.ID)
+                    .ToDictionary(group => group.Key, group => group.Select(item => item.Course).FirstOrDefault());
+
+                var response = groupedResult.Values.ToList();
+
+                return Ok(response);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
         // POST api/<TeacherController>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
