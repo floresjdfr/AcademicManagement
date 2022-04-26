@@ -1,4 +1,5 @@
 ﻿using GestionAcademica.Models;
+using GestionAcademica.Web.Helpers;
 using GestionAcademica.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace GestionAcademica.Web.Controllers
     public class TeacherController : Controller
     {
         private readonly string teacherUrl = "https://localhost:44367/api/teacher/";
+
         private readonly HttpClient httpClient = new HttpClient();
 
         // GET: TeacherController
@@ -118,6 +120,36 @@ namespace GestionAcademica.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
+        }
+
+        public async Task<ActionResult> Courses()
+        {
+            //teacher logged in required
+            HttpContext.Session.SetInt32("userID", 1);
+            var userID = HttpContext.Session.GetInt32("userID");
+
+            TeacherVM model = new TeacherVM();
+            try
+            {
+                //Teacher
+                var newTeacherUrl = teacherUrl + userID;
+                var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
+                responseTeacher.EnsureSuccessStatusCode();
+                var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
+                model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+
+                //Courses
+                var teacherCoursesUrl = teacherUrl + "GetTeacherCourses/" + userID;
+                var responseCourses = await httpClient.GetAsync(teacherCoursesUrl);
+                responseCourses.EnsureSuccessStatusCode();
+                var jsonCourses = await responseCourses.Content.ReadAsStringAsync();
+                model.CoursesList = JsonSerializer.Deserialize<List<Course>>(jsonCourses);
+            }
+            catch
+            {
+
+            }
+            return View(model);
         }
     }
 }
