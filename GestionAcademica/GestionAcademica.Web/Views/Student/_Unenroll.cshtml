@@ -1,0 +1,46 @@
+﻿@model GestionAcademica.Web.ViewModels.StudentVM
+
+<!-- Modal -->
+<div class="modal fade" id="unenrollCourseModal" tabindex="-1" aria-labelledby="unenrollCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form asp-action="Unenroll">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="unenrollCourseModalLabel">¿Desea desmatricular el siguiente curso?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.GroupStudent.Group.Number)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.GroupStudent.Group.Number)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.GroupStudent.Group.Schedule)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.GroupStudent.Group.Schedule)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.GroupStudent.Group.Teacher.Name)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.GroupStudent.Group.Teacher.Name)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="hidden" asp-for="GroupStudent.ID"/>
+                        <input type="submit" value="Eliminar" class="btn btn-danger" />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

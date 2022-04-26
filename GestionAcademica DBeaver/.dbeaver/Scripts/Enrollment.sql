@@ -4,7 +4,7 @@
 CREATE OR ALTER PROCEDURE udpFindStudentCourseGroups(@Fk_Student AS INT, @Fk_CycleState AS INT = NULL)
 AS 
 BEGIN
-	select cg.*, c.*, g.*, t.*
+	select cg.*, c.*, g.*, t.*, t.Name as TeacherName
 	from GroupStudents gs, CourseGroups cg 
 	left join Course c on cg.Fk_Course = c.Pk_Course 
 	left join [Group] g on cg.Fk_Group = g.Pk_Group 

@@ -62,6 +62,17 @@ namespace GestionAcademica.API.Controllers
             return Ok(result);
         }
 
+        // GET api/<CourseGroupsController>/studentID/5
+        [HttpGet("GetByStudentAndGroup/{studentID}/{groupID}")]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetByStudentAndGroup(int studentID, int groupID)
+        {
+            var result = await groupStudentService.FindGroupStudents(null, studentID, groupID, null);
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
         // POST api/<CourseGroupsController>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

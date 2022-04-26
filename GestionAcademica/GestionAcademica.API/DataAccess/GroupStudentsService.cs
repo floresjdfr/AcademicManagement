@@ -10,10 +10,10 @@ namespace GestionAcademica.API.DataAccess
 {
     public class GroupStudentsService : Service
     {
-        private static readonly string insertGroupStudents = "udpInsertGroupStudents";
+        private static readonly string insertGroupStudents = "udpInsertGroupStudent";
         private static readonly string findGroupStudents = "udpFindGroupStudents";
         private static readonly string updateGroupStudentsScore = "udpUpdateGroupStudentsScore";
-        private static readonly string deleteGroupStudents = "udpDeleteGroupStudents";
+        private static readonly string deleteGroupStudents = "udpDeleteGroupStudent";
         private SqlCommand command = null;
 
         public GroupStudentsService() { }
@@ -67,29 +67,30 @@ namespace GestionAcademica.API.DataAccess
                     Student tmpStudent = new Student
                     {
                         ID = reader.GetInt32("Pk_Student"),
-                        Name = reader.GetString("Name"),
-                        PhoneNumber = reader.GetString("PhoneNumber"),
-                        Email = reader.GetString("Email"),
+                        IdStudent = reader.GetString("StudentID"),
+                        Name = reader.GetString("StudentName"),
+                        PhoneNumber = reader.GetString("StudentPhoneNumber"),
+                        Email = reader.GetString("StudentEmail"),
                         DateOfBirth = reader.GetDateTime("DateOfBirth")
                     };
                     Group tmpGroup = new Group
                     {
                         ID = reader.GetInt32("Pk_Group"),
-                        Number = reader.GetString("Number"),
+                        Number = reader.GetString("GroupNumber"),
                         Schedule = reader.GetString("Schedule")
                     };
-                    if (!reader.IsDBNull("Fk_Teacher"))
+                    if (!reader.IsDBNull("Pk_Teacher"))
                     {
                         tmpGroup.Teacher = new Teacher
                         {
                             ID = reader.GetInt32("Pk_Teacher"),
-                            IdIdentidad = reader.GetString("ID"),
+                            IdIdentidad = reader.GetString("TeacherID"),
                             Name = reader.GetString("TeacherName"),
-                            PhoneNumber = reader.GetString("PhoneNumber"),
-                            Email = reader.GetString("Email")
+                            PhoneNumber = reader.GetString("TeacherPhoneNumber"),
+                            Email = reader.GetString("TeacherEmail")
                         };
                     }
-                    if (!reader.IsDBNull("Fk_Cycle"))
+                    if (!reader.IsDBNull("Pk_Cycle"))
                     {
                         tmpGroup.Cycle = new Cycle
                         {
@@ -108,7 +109,7 @@ namespace GestionAcademica.API.DataAccess
                     GroupStudents tmpGroupStudent = new GroupStudents
                     {
                         ID = reader.GetInt32("Pk_GroupStudents"),
-                        Score = reader.GetDouble("Score"),
+                        Score = !reader.IsDBNull("Score") ? reader.GetDouble("Score") : null,
                         Group = tmpGroup,
                         Student = tmpStudent
                     };
@@ -170,7 +171,7 @@ namespace GestionAcademica.API.DataAccess
 
                 var affectedRows = await command.ExecuteNonQueryAsync();
 
-                if (affectedRows > 1) response = true;
+                if (affectedRows > 0) response = true;
             }
             catch
             {

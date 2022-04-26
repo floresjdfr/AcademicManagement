@@ -180,7 +180,7 @@ namespace GestionAcademica.Web.Controllers
 
                 model.CourseGroupsDict = model.CourseGroupsList
                     .GroupBy(item => item.Course.ID)
-                    .ToDictionary(group => model.CourseGroupsList.Where( item => item.Course.ID == group.Key).FirstOrDefault().Course, group => group.ToList());
+                    .ToDictionary(group => model.CourseGroupsList.Where(item => item.Course.ID == group.Key).FirstOrDefault().Course, group => group.ToList());
             }
             catch
             {
@@ -211,6 +211,44 @@ namespace GestionAcademica.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
+        }
+
+        // GET: StudentController/Unenroll/10/5
+        public async Task<ActionResult> Unenroll(int idGroup, int idStudent)
+        {
+            StudentVM model = new StudentVM();
+            try
+            {
+                //GroupStudent
+                var url = groupStudentsUrl + "GetByStudentAndGroup/" + idStudent + "/" + idGroup;
+                var responseGroupStudent = await httpClient.GetAsync(url);
+                responseGroupStudent.EnsureSuccessStatusCode();
+                var groupStudentJson = await responseGroupStudent.Content.ReadAsStringAsync();
+                model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(groupStudentJson).FirstOrDefault();
+            }
+            catch
+            {
+
+            }
+            return PartialView("_Unenroll", model);
+        }
+
+        // POST: StudentController/Unenroll/10/5
+        public async Task<ActionResult> Unenroll(StudentVM model)
+        {
+            try
+            {
+                //GroupStudent
+                var responseGroupStudent = await httpClient.DeleteAsync(groupStudentsUrl);
+                responseGroupStudent.EnsureSuccessStatusCode();
+                var groupStudentJson = await responseGroupStudent.Content.ReadAsStringAsync();
+                model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(groupStudentJson).FirstOrDefault();
+            }
+            catch
+            {
+
+            }
+            return PartialView("_Unenroll", model);
         }
 
     }

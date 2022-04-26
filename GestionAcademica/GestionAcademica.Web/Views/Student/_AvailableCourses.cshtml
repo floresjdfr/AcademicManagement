@@ -3,43 +3,43 @@
 <div class="modal fade" id="enrollGroupModal" tabindex="-1" aria-labelledby="enrollGroupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <form asp-action="">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="enrollGroupModalLabel">Agregar Nuevo Ciclo</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="GroupStudent.Student.ID" />
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Code)</th>
-                                <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Name)</th>
-                                <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Credits)</th>
-                                <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.WeeklyHours)</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.CourseGroupsDict != null)
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="enrollGroupModalLabel">Agregar Nuevo Ciclo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Code)</th>
+                            <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Credits)</th>
+                            <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.WeeklyHours)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.CourseGroupsDict != null)
+                        {
+                            var dict = Model.CourseGroupsDict;
+                            foreach (var key in Model.CourseGroupsDict.Keys)
                             {
-                                var dict = Model.CourseGroupsDict;
-                                foreach (var key in Model.CourseGroupsDict.Keys)
-                                {
-                                    //Course
-                                    <tr>
-                                        <td>@Html.DisplayFor(_ => key.Code)</td>
-                                        <td>@Html.DisplayFor(_ => key.Name)</td>
-                                        <td>@Html.DisplayFor(_ => key.Credits)</td>
-                                        <td>@Html.DisplayFor(_ => key.WeeklyHours)</td>
-                                        <td><button type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Ver Grupos</button></td>
-                                    </tr>
-                                    <!--Groups-->
-                                    <tr class="collapse" id="collapseExample">
-                                        <td colspan="5">
+                                //Course
+                                <tr>
+                                    <td>@Html.DisplayFor(_ => key.Code)</td>
+                                    <td>@Html.DisplayFor(_ => key.Name)</td>
+                                    <td>@Html.DisplayFor(_ => key.Credits)</td>
+                                    <td>@Html.DisplayFor(_ => key.WeeklyHours)</td>
+                                    <td><button type="button" data-toggle="collapse" data-target="#Target-@key.ID" aria-expanded="false" aria-controls="Target-@key.ID">Ver Grupos</button></td>
+                                </tr>
+                                <!--Groups-->
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="collapse" id="Target-@key.ID">
                                             <table class="table">
                                                 <thead>
                                                     <tr>
@@ -56,23 +56,27 @@
                                                             <td>@Html.DisplayFor(_ => courseGroup.Group.Number)</td>
                                                             <td>@Html.DisplayFor(_ => courseGroup.Group.Schedule)</td>
                                                             <td>@Html.DisplayFor(_ => courseGroup.Group.Teacher.Name)</td>
-                                                            <td><button>Matricular Grupo</button></td>
+                                                            <td>
+                                                                <form asp-action="EnrollGroup" asp-route-groupID="@courseGroup.Group.ID">
+                                                                    <input type="hidden" asp-for="GroupStudent.Student.ID" />
+                                                                    <input type="submit" value="Matricular Grupo" />
+                                                                </form>
+                                                            </td>
                                                         </tr>
                                                     }
                                                 </tbody>
                                             </table>
-                                        </td>
-                                    </tr>
-                                }
+                                        </div>
+                                    </td>
+                                </tr>
                             }
-                        </tbody>
-                    </table>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-            </form>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>

@@ -31,6 +31,7 @@
             <th>@Html.DisplayNameFor(model => model.CourseGroup.Group.Number)</th>
             <th>@Html.DisplayNameFor(model => model.CourseGroup.Group.Schedule)</th>
             <th>@Html.DisplayNameFor(model => model.CourseGroup.Group.Teacher.Name)</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -39,12 +40,15 @@
             foreach (var item in Model.CourseGroupsList)
             {
                 <tr>
-                    <td>@Html.DisplayFor(model => model.CourseGroup.Course.Credits)</td>
-                    <td>@Html.DisplayFor(model => model.CourseGroup.Course.WeeklyHours)</td>
-                    <td>@Html.DisplayFor(model => model.CourseGroup.Course.Name)</td>
-                    <td>@Html.DisplayFor(model => model.CourseGroup.Group.Number)</td>
-                    <td>@Html.DisplayFor(model => model.CourseGroup.Group.Schedule)</td>
-                    <td>@Html.DisplayFor(model => model.CourseGroup.Group.Teacher.Name)</td>
+                    <td>@Html.DisplayFor(model => item.Course.Credits)</td>
+                    <td>@Html.DisplayFor(model => item.Course.WeeklyHours)</td>
+                    <td>@Html.DisplayFor(model => item.Course.Name)</td>
+                    <td>@Html.DisplayFor(model => item.Group.Number)</td>
+                    <td>@Html.DisplayFor(model => item.Group.Schedule)</td>
+                    <td>@Html.DisplayFor(model => item.Group.Teacher.Name)</td>
+                    <td>
+                        <button onclick="showUnenroll(@item.Group.ID, @Model.GroupStudent.Student.ID)">Desmatricular</button>
+                    </td>
                 </tr>
             }
         }
@@ -66,6 +70,26 @@
             success: function (data) {
                 $("#partials").html(data);
                 $("#enrollGroupModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+
+    function showUnenroll(idGroup, idStudent) {
+        $.ajax({
+            url: '/Student/Unenroll',
+            type: 'GET',
+            data: {
+                'idGroup': idGroup,
+                'idStudent': idStudent
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#unenrollCourseModal").modal("show");
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));
