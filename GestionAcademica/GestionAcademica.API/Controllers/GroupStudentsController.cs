@@ -28,6 +28,17 @@ namespace GestionAcademica.API.Controllers
             if (result == null) return BadRequest();
             return Ok(result);
         }
+        
+        // GET api/<CourseGroupsController>/5
+        [HttpGet("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(int id)
+        {
+            var result = await groupStudentService.FindGroupStudents(id, null, null, null);
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
 
         // GET api/<CourseGroupsController>/GetByGroup/5
         [HttpGet("GetByGroup/{groupId}")]

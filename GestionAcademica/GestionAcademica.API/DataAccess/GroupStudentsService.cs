@@ -12,7 +12,7 @@ namespace GestionAcademica.API.DataAccess
     {
         private static readonly string insertGroupStudents = "udpInsertGroupStudent";
         private static readonly string findGroupStudents = "udpFindGroupStudents";
-        private static readonly string updateGroupStudentsScore = "udpUpdateGroupStudentsScore";
+        private static readonly string updateGroupStudentsScore = "udpUpdateGroupStudentScore";
         private static readonly string deleteGroupStudents = "udpDeleteGroupStudent";
         private SqlCommand command = null;
 
@@ -109,7 +109,7 @@ namespace GestionAcademica.API.DataAccess
                     GroupStudents tmpGroupStudent = new GroupStudents
                     {
                         ID = reader.GetInt32("Pk_GroupStudents"),
-                        Score = !reader.IsDBNull("Score") ? reader.GetDouble("Score") : null,
+                        Score = !reader.IsDBNull("Score") ? Convert.ToDouble(reader.GetDecimal("Score")) : null,
                         Group = tmpGroup,
                         Student = tmpStudent
                     };

@@ -1,0 +1,94 @@
+﻿@model GestionAcademica.Web.ViewModels.TeacherVM
+
+@{
+    ViewData["Title"] = "Students";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Lista de Estudiantes</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupStudent.Student.IdStudent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupStudent.Student.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupStudent.Student.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupStudent.Student.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupStudent.Student.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupStudent.Score)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.GroupStudentsList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.IdStudent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.DateOfBirth)
+                </td>
+                <td>
+                    @if (item.Score != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Score)
+                    }
+                    else
+                    {
+                        <p>No Calificado</p>
+                    }
+                </td>
+                <td>
+                    <button class="btn" onclick="editScore(@item.ID)">Calificar Estudiante</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="partials"></div>
+
+<script>
+    function editScore(id) {
+        $.ajax({
+            url: '/Teacher/EditScore',
+            type: 'GET',
+            data: {
+                'groupStudentID': id
+            },
+            dataType: 'html',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                $("#partials").html(data);
+                $("#editScoreModal").modal("show");
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    }
+</script>
+

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace GestionAcademica.Models
@@ -8,6 +9,7 @@ namespace GestionAcademica.Models
     {
         public Group Group { get; set; }
         public Student Student { get; set; }
+        
         public double? Score { get; set; }
     }
 }

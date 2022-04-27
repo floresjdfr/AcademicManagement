@@ -1,0 +1,36 @@
+﻿@model GestionAcademica.Web.ViewModels.TeacherVM
+
+@{
+    ViewData["Title"] = "Grupos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Lista de Grupos</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group.Schedule)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.GroupsList) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Schedule)
+            </td>
+            <td>
+                @Html.ActionLink("Ver Estudiantes", "Students", new { groupID = item.ID })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

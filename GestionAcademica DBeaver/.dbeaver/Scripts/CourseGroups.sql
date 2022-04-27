@@ -34,6 +34,7 @@ BEGIN
 		LEFT JOIN CycleState cs ON c2.Fk_CycleState = cs.Pk_CycleState 
 	WHERE Fk_Course = @Fk_Course;
 END
+
 CREATE OR ALTER PROCEDURE udpFindCourseGroupByID(@Pk_CourseGroups AS INT)
 AS 
 BEGIN 
