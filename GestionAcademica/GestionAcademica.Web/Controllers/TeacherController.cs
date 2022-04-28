@@ -27,23 +27,25 @@ namespace GestionAcademica.Web.Controllers
             var model = new TeacherVM();
             try
             {
-                var response = await httpClient.GetAsync(teacherUrl);
-                response.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(teacherUrl);
+                    response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                model.TeacherList = JsonSerializer.Deserialize<List<Teacher>>(json);
+                    var json = await response.Content.ReadAsStringAsync();
+                    model.TeacherList = JsonSerializer.Deserialize<List<Teacher>>(json);
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
+
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
-        }
-
-        // GET: TeacherController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         // POST: TeacherController/Create
@@ -67,12 +69,27 @@ namespace GestionAcademica.Web.Controllers
         // GET: TeacherController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var response = await httpClient.GetAsync(teacherUrl + id.ToString());
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(teacherUrl + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Teacher>(json);
-            return PartialView("_Edit", model);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<Teacher>(json);
+                    return PartialView("_Edit", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
+
         }
 
         // POST: TeacherController/Edit/5
@@ -98,12 +115,26 @@ namespace GestionAcademica.Web.Controllers
         // GET: TeacherController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var response = await httpClient.GetAsync(teacherUrl + id.ToString());
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(teacherUrl + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Teacher>(json);
-            return PartialView("_Delete", model);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<Teacher>(json);
+                    return PartialView("_Delete", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
         }
 
         // POST: TeacherController/Delete/5
@@ -126,116 +157,142 @@ namespace GestionAcademica.Web.Controllers
 
         public async Task<ActionResult> Courses()
         {
-            //teacher logged in required
-            HttpContext.Session.SetInt32("userID", 1);
-            var userID = HttpContext.Session.GetInt32("userID");
-
-            TeacherVM model = new TeacherVM();
             try
             {
-                //Teacher
-                var newTeacherUrl = teacherUrl + userID;
-                var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
-                responseTeacher.EnsureSuccessStatusCode();
-                var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
-                model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.PROFESOR }))
+                {
+                    TeacherVM model = new TeacherVM();
 
-                //Courses
-                var teacherCoursesUrl = teacherUrl + "GetTeacherCourses/" + userID;
-                var responseCourses = await httpClient.GetAsync(teacherCoursesUrl);
-                responseCourses.EnsureSuccessStatusCode();
-                var jsonCourses = await responseCourses.Content.ReadAsStringAsync();
-                model.CoursesList = JsonSerializer.Deserialize<List<Course>>(jsonCourses);
+                    var user = HttpContext.Session.GetObjectFromJson<User>("User");
+
+                    //Teacher
+                    var newTeacherUrl = teacherUrl + user.ID;
+                    var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
+                    responseTeacher.EnsureSuccessStatusCode();
+                    var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
+                    model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+
+                    //Courses
+                    var teacherCoursesUrl = teacherUrl + "GetTeacherCourses/" + user.ID;
+                    var responseCourses = await httpClient.GetAsync(teacherCoursesUrl);
+                    responseCourses.EnsureSuccessStatusCode();
+                    var jsonCourses = await responseCourses.Content.ReadAsStringAsync();
+                    model.CoursesList = JsonSerializer.Deserialize<List<Course>>(jsonCourses);
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
         }
 
         public async Task<ActionResult> Groups(int courseID)
         {
-            TeacherVM model = new TeacherVM();
-            //Get teacher Logged in
-            var userID = HttpContext.Session.GetInt32("userID");
-
             try
             {
-                //Teacher
-                var newTeacherUrl = teacherUrl + userID;
-                var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
-                responseTeacher.EnsureSuccessStatusCode();
-                var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
-                model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.PROFESOR }))
+                {
+                    TeacherVM model = new TeacherVM();
 
-                //Groups
-                var teacherGroupsUrl = teacherUrl + "GetTeacherGroups/" + userID + "/" + courseID;
-                var responseGroups = await httpClient.GetAsync(teacherGroupsUrl);
-                responseGroups.EnsureSuccessStatusCode();
-                var jsonGroups = await responseGroups.Content.ReadAsStringAsync();
-                model.GroupsList = JsonSerializer.Deserialize<List<Group>>(jsonGroups);
+                    var user = HttpContext.Session.GetObjectFromJson<User>("User");
+
+                    //Teacher
+                    var newTeacherUrl = teacherUrl + user.ID;
+                    var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
+                    responseTeacher.EnsureSuccessStatusCode();
+                    var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
+                    model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+
+                    //Groups
+                    var teacherGroupsUrl = teacherUrl + "GetTeacherGroups/" + user.ID + "/" + courseID;
+                    var responseGroups = await httpClient.GetAsync(teacherGroupsUrl);
+                    responseGroups.EnsureSuccessStatusCode();
+                    var jsonGroups = await responseGroups.Content.ReadAsStringAsync();
+                    model.GroupsList = JsonSerializer.Deserialize<List<Group>>(jsonGroups);
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
             catch (Exception ex)
             {
-
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
         }
 
         public async Task<ActionResult> Students(int groupID)
         {
-            TeacherVM model = new TeacherVM();
-            //Get teacher Logged in
-            var userID = HttpContext.Session.GetInt32("userID");
-
             try
             {
-                //Teacher
-                var newTeacherUrl = teacherUrl + userID;
-                var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
-                responseTeacher.EnsureSuccessStatusCode();
-                var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
-                model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.PROFESOR }))
+                {
+                    TeacherVM model = new TeacherVM();
 
-                //GroupStudents
-                var studentsUrl = groupStudetsUrl + "GetByGroup/" + groupID;
-                var responseStudents = await httpClient.GetAsync(studentsUrl);
-                responseStudents.EnsureSuccessStatusCode();
-                var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
-                model.GroupStudentsList = JsonSerializer.Deserialize<List<GroupStudents>>(jsonStudents);
+                    var user = HttpContext.Session.GetObjectFromJson<User>("User");
+
+                    //Teacher
+                    var newTeacherUrl = teacherUrl + user.ID;
+                    var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
+                    responseTeacher.EnsureSuccessStatusCode();
+                    var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
+                    model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
+
+                    //GroupStudents
+                    var studentsUrl = groupStudetsUrl + "GetByGroup/" + groupID;
+                    var responseStudents = await httpClient.GetAsync(studentsUrl);
+                    responseStudents.EnsureSuccessStatusCode();
+                    var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
+                    model.GroupStudentsList = JsonSerializer.Deserialize<List<GroupStudents>>(jsonStudents);
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
             catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
         }
 
         public async Task<ActionResult> EditScore(int groupStudentID)
         {
-            TeacherVM model = new TeacherVM();
-            //Get teacher Logged in
-            var userID = HttpContext.Session.GetInt32("userID");
-
             try
             {
-                //GroupStudent
-                var studentsUrl = groupStudetsUrl + groupStudentID;
-                var responseStudents = await httpClient.GetAsync(studentsUrl);
-                responseStudents.EnsureSuccessStatusCode();
-                var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
-                model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(jsonStudents).FirstOrDefault();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.PROFESOR }))
+                {
+                    TeacherVM model = new TeacherVM();
+
+                    //GroupStudent
+                    var studentsUrl = groupStudetsUrl + groupStudentID;
+                    var responseStudents = await httpClient.GetAsync(studentsUrl);
+                    responseStudents.EnsureSuccessStatusCode();
+                    var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
+                    model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(jsonStudents).FirstOrDefault();
+
+                    return PartialView("_EditScore", model.GroupStudent);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
             catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return PartialView("_EditScore", model.GroupStudent);
         }
 
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<ActionResult> EditScore(GroupStudents model)
         {
             //Get teacher Logged in
