@@ -1,10 +1,10 @@
 ﻿@model GestionAcademica.Web.ViewModels.StudentVM
-
 <!-- Modal -->
 <div class="modal fade" id="unenrollCourseModal" tabindex="-1" aria-labelledby="unenrollCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <form asp-action="Unenroll">
+            <form id="formUnenroll">
+                @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title" id="unenrollCourseModalLabel">¿Desea desmatricular el siguiente curso?</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -35,7 +35,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <input type="hidden" asp-for="GroupStudent.ID"/>
+                        <input type="hidden" asp-for="GroupStudent.ID" />
+                        <input type="hidden" asp-for="GroupStudent.Student.ID" />
                         <input type="submit" value="Eliminar" class="btn btn-danger" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>
@@ -44,3 +45,21 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    $(document).ready(function () {
+        $("#formUnenroll").submit(function (e) {
+            e.preventDefault();
+            var formData = $("#formUnenroll").serialize();
+            $.post("/Student/Unenroll", formData, function (response) {
+                if (response.url)
+                    window.location.href = response.url;
+                else
+                    alert("Could not redirect");
+            });
+        });
+    });
+
+
+</script>

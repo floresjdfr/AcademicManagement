@@ -22,9 +22,9 @@ namespace PruebaMVC_API.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Error(string error)
         {
-            return View();
+            return View(error);
         }
 
        

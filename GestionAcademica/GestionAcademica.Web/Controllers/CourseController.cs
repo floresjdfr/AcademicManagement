@@ -15,6 +15,7 @@ namespace GestionAcademica.Web.Controllers
     {
         private readonly string url = "https://localhost:44367/api/course/";
         private readonly HttpClient httpClient = new HttpClient();
+        public static readonly string ControllerName = "Course";
 
         public Encoding Enconding { get; private set; }
 

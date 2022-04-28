@@ -56,6 +56,30 @@ namespace GestionAcademica.API.Controllers
             return Ok(result);
         }
 
+        // POST api/<UserController>/Login
+        [HttpPost("Login/")]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Login([FromBody] User value)
+        {
+            try
+            {
+                value.ID = null;
+                var result = await userService.FindUser(value);
+
+                if (result == null) throw new Exception();
+                if (value.Password != result.Password) throw new Exception();
+
+                result.Password = null;
+
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest(new { errorID = -2, error = "Incorrect username or password" });
+            }
+        }
+
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

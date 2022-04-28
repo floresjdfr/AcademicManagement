@@ -19,6 +19,7 @@ namespace GestionAcademica.Web.Controllers
         private readonly string groupStudentsUrl = "https://localhost:44367/api/GroupStudents/";
         private readonly string enrollmentUrl = "https://localhost:44367/api/Enrollment/";
         private readonly HttpClient httpClient = new HttpClient();
+        public static readonly string ControllerName = "Student";
 
         // GET: StudentController
         public async Task<ActionResult> Index()
@@ -205,7 +206,7 @@ namespace GestionAcademica.Web.Controllers
                 var responseGroup = await httpClient.PostAsync(groupStudentsUrl, groupContent);
                 responseGroup.EnsureSuccessStatusCode();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(StudentGroups), new { studentID = model.GroupStudent.Student.ID });
             }
             catch
             {
@@ -234,12 +235,15 @@ namespace GestionAcademica.Web.Controllers
         }
 
         // POST: StudentController/Unenroll/10/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Unenroll(StudentVM model)
         {
             try
             {
                 //GroupStudent
-                var responseGroupStudent = await httpClient.DeleteAsync(groupStudentsUrl);
+                var deleteUrl = groupStudentsUrl + model.GroupStudent.ID;
+                var responseGroupStudent = await httpClient.DeleteAsync(deleteUrl);
                 responseGroupStudent.EnsureSuccessStatusCode();
                 var groupStudentJson = await responseGroupStudent.Content.ReadAsStringAsync();
                 model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(groupStudentJson).FirstOrDefault();
@@ -248,8 +252,7 @@ namespace GestionAcademica.Web.Controllers
             {
 
             }
-            return PartialView("_Unenroll", model);
+            return Json(new { url = Url.Action("StudentGroups", new { studentID = model.GroupStudent.Student.ID }) });
         }
-
     }
 }

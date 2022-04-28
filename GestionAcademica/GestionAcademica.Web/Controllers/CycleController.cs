@@ -17,6 +17,7 @@ namespace GestionAcademica.Web.Controllers
         private readonly string CycleUrl = "https://localhost:44367/api/Cycle/";
         private readonly string CycleStatesUrl = "https://localhost:44367/api/CycleState/";
         private readonly HttpClient httpClient = new HttpClient();
+        public static readonly string ControllerName = "Cycle";
 
         // GET: CycleController
         public async Task<ActionResult> Index()

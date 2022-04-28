@@ -28,6 +28,7 @@ namespace GestionAcademica.Web.Controllers
         private readonly string courseUrl = "https://localhost:44367/api/course/";
         private readonly string groupUrl = "https://localhost:44367/api/group/";
         private readonly HttpClient httpClient = new HttpClient();
+        public static readonly string ControllerName = "AcademicOffer";
 
         public async Task<IActionResult> Index()
         {

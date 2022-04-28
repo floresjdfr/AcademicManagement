@@ -1,11 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using GestionAcademica.Web.Helpers
+@using GestionAcademica.Models
+
+<!DOCTYPE html>
 <html lang="es-mx">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gestion Academica</title>
-
-
 
 
     <!--JQuery-->
@@ -45,33 +46,48 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Career" asp-action="Index">Carreras</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Cursos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Index">Profesores</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cycle" asp-action="Index">Ciclos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Group" asp-action="Index">Grupos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Index">Estudiantes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AcademicOffer" asp-action="Index">Oferta Académica</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Courses">Ver Cursos Profesor</a>
-                        </li>
+                        @if (RolesHelper.IsLoggedin(this.Context))
+                        {
+                            if (RolesHelper.IsAuthorized(this.Context, new ERole[] { ERole.ADMINISTRADOR }))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Career" asp-action="Index">Carreras</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Index">Profesores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cycle" asp-action="Index">Ciclos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AcademicOffer" asp-action="Index">Oferta Académica</a>
+                                </li>
+                            }
+                            if (RolesHelper.IsAuthorized(this.Context, new ERole[] { ERole.ADMINISTRADOR, ERole.MATRICULADOR }))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Index">Estudiantes</a>
+                                </li>
+                            }
+                            if (RolesHelper.IsAuthorized(this.Context, new ERole[] { ERole.PROFESOR }))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Courses">Ver Cursos Profesor</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -83,11 +99,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - PruebaMVC_API - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
 
     <script>
         $(".table").DataTable();
@@ -96,3 +108,14 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+<style>
+    td, th {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    html, body {
+        height: 100%;
+    }
+</style>

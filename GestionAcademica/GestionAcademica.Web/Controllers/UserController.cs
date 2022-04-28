@@ -16,6 +16,7 @@ namespace GestionAcademica.Web.Controllers
         private readonly string userUrl = "https://localhost:44367/api/user/";
         private readonly string userTypeUrl = "https://localhost:44367/api/UserType/";
         private readonly HttpClient httpClient = new HttpClient();
+        public static readonly string ControllerName = "User";
 
         // GET: UserController
         public async Task<ActionResult> Index()

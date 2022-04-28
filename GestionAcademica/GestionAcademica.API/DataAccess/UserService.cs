@@ -99,7 +99,6 @@ namespace GestionAcademica.API.DataAccess
                 };
                 command.Parameters.Add(new SqlParameter("@Pk_User", user.ID));
                 command.Parameters.Add(new SqlParameter("@ID", user.UserID));
-                command.Parameters.Add(new SqlParameter("@Password", user.Password));
 
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.Read())

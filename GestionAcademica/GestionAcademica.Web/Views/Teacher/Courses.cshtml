@@ -41,9 +41,7 @@
                     @Html.DisplayFor(modelItem => item.WeeklyHours)
                 </td>
                 <td>
-                    <form asp-action="Groups" method="post" asp-route-courseID="@item.ID">
-                        <button type="submit">Ver Grupos</button>
-                    </form>
+                    @Html.ActionLink("Ver Grupos", "Groups", "Teacher", new { courseID = item.ID }, new { @class = "btn btn-outline-primary" })
                 </td>
             </tr>
         }

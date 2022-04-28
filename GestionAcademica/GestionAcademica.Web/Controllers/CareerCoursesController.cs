@@ -15,6 +15,8 @@ namespace GestionAcademica.Web.Controllers
     {
         private static readonly string urlCareerCourses = "https://localhost:44367/api/CareerCourses/";
         private static readonly HttpClient httpClient = new HttpClient();
+        public static readonly string ControllerName = "CareerCourse";
+
 
         // GET: CareerController
         public ActionResult Index()
@@ -93,19 +95,5 @@ namespace GestionAcademica.Web.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-        public async Task<ActionResult> EnrollGroups(int careerID, int studentID)
-        {
-            try
-            {
-                
-            }
-            catch
-            {
-
-            }
-            return null;
-        }
-
     }
 }

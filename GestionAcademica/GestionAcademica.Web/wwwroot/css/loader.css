@@ -1,5 +1,5 @@
 ﻿.loader {
-    animation: fadeIn 1s;
+    animation: fadeIn 0.4s;
     animation-fill-mode: forwards;
     position: fixed;
     z-index: 99;
@@ -18,7 +18,7 @@
     }
 
     .loader.hidden {
-        animation: fadeOut 1s;
+       animation: fadeOut 0.4s;
         animation-fill-mode: forwards;
     }
 

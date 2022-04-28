@@ -36,7 +36,7 @@ namespace GestionAcademica.API.DataAccess
 
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
-                if (rowsAffected > 1) response = true;
+                if (rowsAffected > 0) response = true;
             }
             catch { }
             Disconnect();

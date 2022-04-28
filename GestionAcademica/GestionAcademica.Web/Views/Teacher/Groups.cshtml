@@ -28,7 +28,7 @@
                 @Html.DisplayFor(modelItem => item.Schedule)
             </td>
             <td>
-                @Html.ActionLink("Ver Estudiantes", "Students", new { groupID = item.ID })
+                @Html.ActionLink("Ver Estudiantes", "Students", "Teacher", new { groupID = item.ID }, new { @class = "btn btn-outline-primary" })
             </td>
         </tr>
 }

@@ -1,0 +1,64 @@
+﻿@using GestionAcademica.Web.Helpers
+@using GestionAcademica.Models
+
+<!DOCTYPE html>
+<html lang="es-mx">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gestion Academica</title>
+
+    <!--JQuery-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!--Loader-->
+    <link href="~/css/loader.css" rel="stylesheet" />
+    <script src="~/js/loader.js"></script>
+</head>
+<body>
+    <div class="loader hidden">
+        <img src="~/image/Spinner.gif" alt="Loading..." />
+    </div>
+    <section id="cover" class="min-vh-100">
+        <div id="cover-caption">
+            <div class="container">
+                <div class="row text-white">
+                    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+                        <h1 class="display-4 py-2 text-truncate">Center my form.</h1>
+                        <div class="px-2">
+                            <form action="" class="justify-content-center">
+                                <div class="form-group">
+                                    <label class="sr-only">Name</label>
+                                    <input type="text" class="form-control" placeholder="Jane Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only">Email</label>
+                                    <input type="text" class="form-control" placeholder="jane.doe@example.com">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Launch</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+<style>
+    html, body {
+        height: 100%;
+    }
+</style>
