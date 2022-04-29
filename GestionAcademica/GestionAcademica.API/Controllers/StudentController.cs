@@ -43,6 +43,62 @@ namespace GestionAcademica.API.DataAccess
             return Ok(result);
         }
 
+        // GET api/<StudentController>/GetStudentByUser/5
+        [HttpGet("GetStudentByUser/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetStudentByUser(int id)
+        {
+            var result = await studentService.FindStudentByUser(id);
+            if (result == null) return NotFound();
+
+            return Ok(result);
+        }
+
+        // GET api/<StudentController>/GetStudentCycles/5
+        [HttpGet("GetStudentCycles/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetStudentCycles(int id)
+        {
+            try
+            {
+                var result = await studentService.FindStudentCycles(new Student { ID = id });
+                if (result == null) throw new Exception();
+
+                var filteredList = result
+                    .GroupBy(item => item.ID)
+                    .Select(group => group.FirstOrDefault())
+                    .OrderBy(item => item.ID)
+                    .ToList();
+
+                return Ok(filteredList);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        // GET api/<StudentController>/GetStudentAcademicHistory/5/1
+        [HttpGet("GetStudentAcademicHistory/{id}/{cycleID?}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetStudentAcademicHistory(int id, int? cycleID)
+        {
+            try
+            {
+                var result = await studentService.FindStudentAcademicHistory(id, cycleID);
+                if (result == null) throw new Exception();
+
+                return Ok(result);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
         // POST api/<StudentController>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

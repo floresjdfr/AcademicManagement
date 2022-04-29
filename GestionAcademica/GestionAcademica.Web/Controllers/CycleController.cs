@@ -1,4 +1,5 @@
 ﻿using GestionAcademica.Models;
+using GestionAcademica.Web.Helpers;
 using GestionAcademica.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,31 +26,32 @@ namespace GestionAcademica.Web.Controllers
             var model = new CycleVM();
             try
             {
-                var responseCycles = await httpClient.GetAsync(CycleUrl);
-                responseCycles.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var responseCycles = await httpClient.GetAsync(CycleUrl);
+                    responseCycles.EnsureSuccessStatusCode();
 
-                var responseCycleStatesList = await httpClient.GetAsync(CycleStatesUrl);
-                responseCycleStatesList.EnsureSuccessStatusCode();
+                    var responseCycleStatesList = await httpClient.GetAsync(CycleStatesUrl);
+                    responseCycleStatesList.EnsureSuccessStatusCode();
 
-                var jsonCycles = await responseCycles.Content.ReadAsStringAsync();
-                var jsonCycleStates = await responseCycleStatesList.Content.ReadAsStringAsync();
+                    var jsonCycles = await responseCycles.Content.ReadAsStringAsync();
+                    var jsonCycleStates = await responseCycleStatesList.Content.ReadAsStringAsync();
 
-                model.CycleList = JsonSerializer.Deserialize<List<Cycle>>(jsonCycles);
-                model.CycleStateList = JsonSerializer.Deserialize<List<CycleState>>(jsonCycleStates);
+                    model.CycleList = JsonSerializer.Deserialize<List<Cycle>>(jsonCycles);
+                    model.CycleStateList = JsonSerializer.Deserialize<List<CycleState>>(jsonCycleStates);
+
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
         }
-
-        // GET: CycleController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
 
         // POST: CycleController/Create
         [HttpPost]
@@ -75,23 +77,31 @@ namespace GestionAcademica.Web.Controllers
             CycleVM model = new CycleVM();
             try
             {
-                var responseCycle = await httpClient.GetAsync(CycleUrl + id.ToString());
-                responseCycle.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var responseCycle = await httpClient.GetAsync(CycleUrl + id.ToString());
+                    responseCycle.EnsureSuccessStatusCode();
 
-                var responseCycleStatesList = await httpClient.GetAsync(CycleStatesUrl);
-                responseCycleStatesList.EnsureSuccessStatusCode();
+                    var responseCycleStatesList = await httpClient.GetAsync(CycleStatesUrl);
+                    responseCycleStatesList.EnsureSuccessStatusCode();
 
-                var jsonCycle = await responseCycle.Content.ReadAsStringAsync();
-                var jsonCycleStates = await responseCycleStatesList.Content.ReadAsStringAsync();
+                    var jsonCycle = await responseCycle.Content.ReadAsStringAsync();
+                    var jsonCycleStates = await responseCycleStatesList.Content.ReadAsStringAsync();
 
-                model.Cycle = JsonSerializer.Deserialize<Cycle>(jsonCycle);
-                model.CycleStateList = JsonSerializer.Deserialize<List<CycleState>>(jsonCycleStates);
+                    model.Cycle = JsonSerializer.Deserialize<Cycle>(jsonCycle);
+                    model.CycleStateList = JsonSerializer.Deserialize<List<CycleState>>(jsonCycleStates);
+
+                    return PartialView("_Edit", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return PartialView("_Edit", model);
         }
 
         // POST: CycleController/Edit/5
@@ -117,12 +127,26 @@ namespace GestionAcademica.Web.Controllers
         // GET: CycleController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var response = await httpClient.GetAsync(CycleUrl + id.ToString());
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(CycleUrl + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Cycle>(json);
-            return PartialView("_Delete", model);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<Cycle>(json);
+                    return PartialView("_Delete", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
         }
 
         // POST: CycleController/Delete/5

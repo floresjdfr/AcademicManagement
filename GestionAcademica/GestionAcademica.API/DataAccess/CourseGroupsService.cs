@@ -84,24 +84,22 @@ namespace GestionAcademica.API.DataAccess
         public async Task<bool> AddGroupToCourse(CourseGroups courseGroups)
         {
             bool response = false;
-            try
+
+            Connect();
+
+            command = new SqlCommand(addGroupToCourse, connection)
             {
-                Connect();
+                CommandType = CommandType.StoredProcedure
+            };
+            command.Parameters.Add(new SqlParameter("@Fk_Course", courseGroups.Course.ID));
+            command.Parameters.Add(new SqlParameter("@Fk_Teacher", courseGroups.Group.Teacher.ID));
+            command.Parameters.Add(new SqlParameter("@Number", courseGroups.Group.Number));
+            command.Parameters.Add(new SqlParameter("@Schedule", courseGroups.Group.Schedule));
 
-                command = new SqlCommand(addGroupToCourse, connection)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                command.Parameters.Add(new SqlParameter("@Fk_Course", courseGroups.Course.ID));
-                command.Parameters.Add(new SqlParameter("@Fk_Teacher", courseGroups.Group.Teacher.ID));
-                command.Parameters.Add(new SqlParameter("@Number", courseGroups.Group.Number));
-                command.Parameters.Add(new SqlParameter("@Schedule", courseGroups.Group.Schedule));
+            var rowsAffected = await command.ExecuteNonQueryAsync();
 
-                var rowsAffected = await command.ExecuteNonQueryAsync();
+            if (rowsAffected > 1) response = true;
 
-                if (rowsAffected > 1) response = true;
-            }
-            catch { }
             Disconnect();
             return response;
         }

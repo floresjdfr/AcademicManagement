@@ -78,6 +78,12 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Courses">Ver Cursos</a>
                                 </li>
                             }
+                            if (RolesHelper.IsAuthorized(this.Context, new ERole[] { ERole.ALUMNO }))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="AcademicHistory">Ver Historial Academico</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Logout</a>
                             </li>

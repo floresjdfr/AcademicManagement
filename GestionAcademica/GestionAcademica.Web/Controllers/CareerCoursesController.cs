@@ -1,4 +1,5 @@
 ﻿using GestionAcademica.Models;
+using GestionAcademica.Web.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -27,17 +28,24 @@ namespace GestionAcademica.Web.Controllers
         {
             try
             {
-                var response = await httpClient.GetAsync(urlCareerCourses + id.ToString());
-                response.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(urlCareerCourses + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<CareerCourses>(json);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<CareerCourses>(json);
 
-                return PartialView("_Edit" ,model);
+                    return PartialView("_Edit", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Career");
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
         }
 
@@ -64,17 +72,24 @@ namespace GestionAcademica.Web.Controllers
         {
             try
             {
-                var response = await httpClient.GetAsync(urlCareerCourses + id.ToString());
-                response.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(urlCareerCourses + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<CareerCourses>(json);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<CareerCourses>(json);
 
-                return PartialView("_Delete" ,model);
+                    return PartialView("_Delete", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Career");
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
         }
 

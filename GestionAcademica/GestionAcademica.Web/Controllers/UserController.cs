@@ -3,6 +3,7 @@ using GestionAcademica.Web.Helpers;
 using GestionAcademica.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -22,34 +23,35 @@ namespace GestionAcademica.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var model = new UserVM();
+
             try
             {
-                var responseUsers = await httpClient.GetAsync(userUrl);
-                responseUsers.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var responseUsers = await httpClient.GetAsync(userUrl);
+                    responseUsers.EnsureSuccessStatusCode();
 
-                var responseUserTypes = await httpClient.GetAsync(userTypeUrl);
-                responseUserTypes.EnsureSuccessStatusCode();
+                    var responseUserTypes = await httpClient.GetAsync(userTypeUrl);
+                    responseUserTypes.EnsureSuccessStatusCode();
 
-                var jsonUsers = await responseUsers.Content.ReadAsStringAsync();
-                var jsonUserTypes = await responseUserTypes.Content.ReadAsStringAsync();
+                    var jsonUsers = await responseUsers.Content.ReadAsStringAsync();
+                    var jsonUserTypes = await responseUserTypes.Content.ReadAsStringAsync();
 
-                model.UserList = JsonSerializer.Deserialize<List<User>>(jsonUsers);
-                model.UserTypesList = JsonSerializer.Deserialize<List<UserType>>(jsonUserTypes);
+                    model.UserList = JsonSerializer.Deserialize<List<User>>(jsonUsers);
+                    model.UserTypesList = JsonSerializer.Deserialize<List<UserType>>(jsonUserTypes);
 
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
         }
-
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
 
         // POST: UserController/Create
         [HttpPost]
@@ -76,24 +78,31 @@ namespace GestionAcademica.Web.Controllers
 
             try
             {
-                var responseUser = await httpClient.GetAsync(userUrl+id.ToString());
-                responseUser.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var responseUser = await httpClient.GetAsync(userUrl + id.ToString());
+                    responseUser.EnsureSuccessStatusCode();
 
-                var responseUserTypes = await httpClient.GetAsync(userTypeUrl);
-                responseUserTypes.EnsureSuccessStatusCode();
+                    var responseUserTypes = await httpClient.GetAsync(userTypeUrl);
+                    responseUserTypes.EnsureSuccessStatusCode();
 
-                var jsonUser = await responseUser.Content.ReadAsStringAsync();
-                var jsonUserTypes = await responseUserTypes.Content.ReadAsStringAsync();
+                    var jsonUser = await responseUser.Content.ReadAsStringAsync();
+                    var jsonUserTypes = await responseUserTypes.Content.ReadAsStringAsync();
 
-                model.User = JsonSerializer.Deserialize<User>(jsonUser);
-                model.UserTypesList = JsonSerializer.Deserialize<List<UserType>>(jsonUserTypes);
+                    model.User = JsonSerializer.Deserialize<User>(jsonUser);
+                    model.UserTypesList = JsonSerializer.Deserialize<List<UserType>>(jsonUserTypes);
 
+                    return type == 0 ? PartialView("_Edit", model) : PartialView("_EditPassword", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return type == 0 ? PartialView("_Edit", model) : PartialView("_EditPassword", model);
         }
 
         // POST: UserController/Edit/5
@@ -119,12 +128,26 @@ namespace GestionAcademica.Web.Controllers
         // GET: UserController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var response = await httpClient.GetAsync(userUrl + id.ToString());
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(userUrl + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<User>(json);
-            return PartialView("_Delete", model);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<User>(json);
+                    return PartialView("_Delete", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
         }
 
         // POST: UserController/Delete/5

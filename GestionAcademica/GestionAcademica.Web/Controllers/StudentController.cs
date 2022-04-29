@@ -305,5 +305,88 @@ namespace GestionAcademica.Web.Controllers
             }
             return Json(new { url = Url.Action("StudentGroups", new { studentID = model.GroupStudent.Student.ID }) });
         }
+
+        public async Task<IActionResult> AcademicHistory()
+        {
+            try
+            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ALUMNO }))
+                {
+                    StudentVM model = new StudentVM();
+
+                    var user = HttpContext.Session.GetObjectFromJson<User>("User");
+
+                    //Student
+                    var getStudentUrl = StudentUrl + "GetStudentByUser/" + user.ID;
+                    var responseStudent = await httpClient.GetAsync(getStudentUrl);
+                    responseStudent.EnsureSuccessStatusCode();
+                    var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
+                    model.Student = JsonSerializer.Deserialize<Student>(jsonStudent);
+
+                    //Cycles
+                    var getCyclesUrl = StudentUrl + "GetStudentCycles/" + model.Student.ID;
+                    var responseCycles = await httpClient.GetAsync(getCyclesUrl);
+                    responseCycles.EnsureSuccessStatusCode();
+                    var jsonCycles = await responseCycles.Content.ReadAsStringAsync();
+                    model.CyclesList = JsonSerializer.Deserialize<List<Cycle>>(jsonCycles);
+
+                    //Academic History
+                    var activeCycle = model.CyclesList.Where(item => item.CycleState.ID == 1).FirstOrDefault();
+                    model.Cycle = activeCycle;
+
+                    var getAcademicHistoryUrl = StudentUrl + "GetStudentAcademicHistory/" + model.Student.ID + "/" + activeCycle.ID;
+                    var responseAcademicHistory = await httpClient.GetAsync(getAcademicHistoryUrl);
+                    responseAcademicHistory.EnsureSuccessStatusCode();
+                    var jsonAcademicHistory = await responseAcademicHistory.Content.ReadAsStringAsync();
+                    model.GroupStudentsList = JsonSerializer.Deserialize<List<GroupStudents>>(jsonAcademicHistory);
+
+
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
+            }
+        }
+
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> AcademicHistory(StudentVM model)
+        {
+            try
+            {
+
+                var user = HttpContext.Session.GetObjectFromJson<User>("User");
+
+                //Student
+                var getStudentUrl = StudentUrl + "GetStudentByUser/" + user.ID;
+                var responseStudent = await httpClient.GetAsync(getStudentUrl);
+                responseStudent.EnsureSuccessStatusCode();
+                var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
+                model.Student = JsonSerializer.Deserialize<Student>(jsonStudent);
+
+                //Academic History
+                var getAcademicHistoryUrl = StudentUrl + "GetStudentAcademicHistory/" + model.Student.ID + "/" + model.Cycle.ID;
+                var responseAcademicHistory = await httpClient.GetAsync(getAcademicHistoryUrl);
+                responseAcademicHistory.EnsureSuccessStatusCode();
+                var jsonAcademicHistory = await responseAcademicHistory.Content.ReadAsStringAsync();
+                model.GroupStudentsList = JsonSerializer.Deserialize<List<GroupStudents>>(jsonAcademicHistory);
+
+
+                return PartialView("_AcademicHistoryTable", model);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
+        }
     }
+
 }

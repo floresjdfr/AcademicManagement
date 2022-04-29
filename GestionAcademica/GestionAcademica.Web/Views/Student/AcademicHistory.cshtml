@@ -1,0 +1,57 @@
+﻿@model GestionAcademica.Web.ViewModels.StudentVM
+@{
+    ViewData["Title"] = "Historial Acadéemico";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var itemsList = Model.CyclesList.ConvertAll<SelectListItem>(item =>
+        new SelectListItem
+        {
+            Value = item.ID.ToString(),
+            Text = item.Number + " | " + item.Year
+        }
+    );
+}
+
+
+<form asp-action="AcademicHistory" id="formAcademicHistory">
+    <div class="form-row align-items-end">
+        <div class="col">
+            <label class="control-label">Ciclo</label>
+            <select class="form-control" asp-for="Cycle.ID" asp-items="@(new SelectList(itemsList, "Value", "Text"))">
+                <option>Historial Completo</option>
+            </select>
+            <span asp-validation-for="Student.Career.CareerName" class="text-danger"></span>
+        </div>
+        <div class="col ">
+            <input class="btn btn-outline-primary" type="submit" value="Buscar Historial Academico" />
+        </div>
+    </div>
+</form>
+<br />
+
+<h4>Historial Académico</h4>
+<hr />
+<div id="partials">
+    <partial name="_AcademicHistoryTable" />
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#formAcademicHistory").submit(function (e) {
+            e.preventDefault();
+            var formData = $("#formAcademicHistory").serialize();
+            $.ajax({
+                method: "POST",
+                url: "/Student/AcademicHistory",
+                data: formData,
+                success: function (response) {
+                    if (response.url)
+                        window.location.href = response.url;
+                    else
+                        $("#partials").html(response);
+                }
+            });
+        });
+    });
+</script>
+

@@ -186,18 +186,22 @@ namespace GestionAcademica.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddNewCourse(CareerVM model)
         {
+            HttpResponseMessage response = null;
             try
             {
                 model.CareerCourse.Career = model.Career;
                 var careerCourseJson = JsonSerializer.Serialize(model.CareerCourse);
                 var requestContent = new StringContent(careerCourseJson, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(careerCoursesUrl, requestContent);
+                response = await httpClient.PostAsync(careerCoursesUrl, requestContent);
                 response.EnsureSuccessStatusCode();
                 return RedirectToAction("Details", new { id = model.CareerCourse.Career.ID });
             }
             catch
             {
-                return RedirectToAction("Index");
+                var jsonError = await response.Content.ReadAsStringAsync();
+                var error = JsonSerializer.Deserialize<Error>(jsonError);
+                TempData["Error"] = error.ErrorMessage;
+                return RedirectToAction("Details", new { id = model.CareerCourse.Career.ID });
             }
         }
     }

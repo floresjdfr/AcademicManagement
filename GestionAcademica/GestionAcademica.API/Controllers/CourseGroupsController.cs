@@ -3,6 +3,7 @@ using GestionAcademica.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -57,9 +58,32 @@ namespace GestionAcademica.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Post([FromBody] CourseGroups value)
         {
-            var result = await courseGroupsService.AddGroupToCourse(value);
-            if (result == false) return BadRequest();
-            return Ok(result);
+            try
+            {
+                var result = await courseGroupsService.AddGroupToCourse(value);
+                if (result == false) throw new Exception("Unexpected error");
+                return Ok(result);
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number >= 51000)
+                {
+                    var error = new Error
+                    {
+                        ErrorCode = ex.Number,
+                        ErrorMessage = ex.Message
+                    };
+                    return BadRequest(error);
+                }
+                else
+                    throw new Exception("Unexpected error");
+            }
+            catch (Exception ex)
+            {
+                var error = new Error { ErrorCode = -1, ErrorMessage = ex.Message };
+                return BadRequest(error);
+            }
+
         }
 
         // PUT api/<CourseGroupsController>/5

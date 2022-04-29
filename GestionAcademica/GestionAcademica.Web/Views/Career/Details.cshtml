@@ -38,6 +38,18 @@
 </div>
 <hr />
 
+@if (TempData["Error"] != null)
+{
+    var error = TempData["Error"];
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> @error
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+
 <!-- Modal -->
 <div class="modal fade" id="addNewCourseModal" tabindex="-1" aria-labelledby="addNewCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

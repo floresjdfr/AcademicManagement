@@ -9,6 +9,7 @@ namespace GestionAcademica.Models
     {
         public Teacher Teacher { get; set; }
         public Cycle Cycle { get; set; }
+        public Course Course { get; set; }
 
         [DisplayName("Número Grupo")]
         public string Number { get; set; }

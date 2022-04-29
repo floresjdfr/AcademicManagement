@@ -62,6 +62,54 @@ BEGIN
     AND (@DateOfBirth IS NULL OR s.DateOfBirth = @DateOfBirth);
 END
 
+
+-- Get cycles list of student academic history
+CREATE OR ALTER PROCEDURE udpFindStudentCycles(@Pk_Student AS INT )
+AS
+BEGIN
+    SELECT  c.*, cs.*
+    FROM GroupStudents gs  
+   	left join [Group] g on gs.Fk_Group = g.Pk_Group 
+   	left join [Cycle] c on g.Fk_Cycle = c.Pk_Cycle 
+   	left join CycleState cs on c.Fk_CycleState = cs.Pk_CycleState 
+   	where gs.Fk_Student = @Pk_Student;
+END
+
+-- Get student academic history
+-- It can be filtered by cycle, otherwise it return the whole academic history
+CREATE OR ALTER PROCEDURE udpFindStudentAcademicHistory(@Pk_Student AS INT, @Pk_Cycle AS INT = NULL)
+AS
+BEGIN
+    SELECT gs.*, g.*, t.*, 
+    --Cycle
+    c.Pk_Cycle,
+    c.Fk_CycleState,
+    c.[Year],
+    c.[Number] as CycleNumber,
+    c.StartDate,
+    c.EndDate,
+   	
+    --Course
+    
+    c2.Pk_Course,
+    c2.Code,
+    c2.Name as CourseName,
+    c2.Credits,
+    c2.WeeklyHours
+   
+    
+    FROM GroupStudents gs, CourseGroups cg  
+   	left join [Group] g on cg.Fk_Group = g.Pk_Group 
+   	left join [Cycle] c on g.Fk_Cycle = c.Pk_Cycle 
+   	left join CycleState cs on c.Fk_CycleState = cs.Pk_CycleState 
+   	left join Course c2 on cg.Fk_Course = c2.Pk_Course 
+   	left join Teacher t on g.Fk_Teacher = t.Pk_Teacher 
+   	where gs.Fk_Student = @Pk_Student
+   	and gs.Fk_Group = cg.Fk_Group 
+   	and (@Pk_Cycle is null or c.Pk_Cycle = @Pk_Cycle);
+END
+
+
 --DELETE
 CREATE OR ALTER PROCEDURE udpDeleteStudent(@Pk_Student AS INT)
 AS

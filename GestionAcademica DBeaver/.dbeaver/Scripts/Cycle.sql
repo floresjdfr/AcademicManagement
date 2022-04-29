@@ -51,6 +51,7 @@ BEGIN
             AND (@EndDate IS NULL OR EndDate = @EndDate)
 END
 
+
 --DELETE
 CREATE OR ALTER PROCEDURE udpDeleteCycle(@Pk_Cycle AS INT)
 AS

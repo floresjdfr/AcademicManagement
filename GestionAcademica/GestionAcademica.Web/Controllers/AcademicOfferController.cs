@@ -33,28 +33,35 @@ namespace GestionAcademica.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var model = new AcademicOfferVM();
-
             try
             {
-                var ciclesList = new List<SelectListItem>
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var ciclesList = new List<SelectListItem>
                 {
                     new SelectListItem{Value = "1", Text = "Primer Ciclo"},
                     new SelectListItem{Value = "2", Text = "Segundo Ciclo"},
                 };
 
-                var responseCareers = await httpClient.GetAsync(careersUrl);
-                responseCareers.EnsureSuccessStatusCode();
+                    var responseCareers = await httpClient.GetAsync(careersUrl);
+                    responseCareers.EnsureSuccessStatusCode();
 
-                var jsonCareers = await responseCareers.Content.ReadAsStringAsync();
-                model.CareerList = JsonSerializer.Deserialize<List<Career>>(jsonCareers);
-                model.SelectList = ciclesList;
+                    var jsonCareers = await responseCareers.Content.ReadAsStringAsync();
+                    model.CareerList = JsonSerializer.Deserialize<List<Career>>(jsonCareers);
+                    model.SelectList = ciclesList;
+
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
 
-            return View(model);
         }
 
         // POST: GroupController/Courses
@@ -85,60 +92,73 @@ namespace GestionAcademica.Web.Controllers
             var model = new AcademicOfferVM();
             try
             {
-                TempData["CourseID"] = id;
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    TempData["CourseID"] = id;
 
-                //Course
-                var newCourseUrl = courseUrl + id;
-                var responseCourse = await httpClient.GetAsync(newCourseUrl);
-                responseCourse.EnsureSuccessStatusCode();
-                var courseJson = await responseCourse.Content.ReadAsStringAsync();
-                model.CourseGroup = new CourseGroups { Course = JsonSerializer.Deserialize<Course>(courseJson) };
+                    //Course
+                    var newCourseUrl = courseUrl + id;
+                    var responseCourse = await httpClient.GetAsync(newCourseUrl);
+                    responseCourse.EnsureSuccessStatusCode();
+                    var courseJson = await responseCourse.Content.ReadAsStringAsync();
+                    model.CourseGroup = new CourseGroups { Course = JsonSerializer.Deserialize<Course>(courseJson) };
 
-                //CourseGroups
-                var url = courseGroupsUrl + "GetByCourse/" + id;
-                var response = await httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                var json = await response.Content.ReadAsStringAsync();
-                model.CourseGroupsList = JsonSerializer.Deserialize<List<CourseGroups>>(json);
+                    //CourseGroups
+                    var url = courseGroupsUrl + "GetByCourse/" + id;
+                    var response = await httpClient.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+                    var json = await response.Content.ReadAsStringAsync();
+                    model.CourseGroupsList = JsonSerializer.Deserialize<List<CourseGroups>>(json);
 
-                //Teachers
-                var responseTeachers = await httpClient.GetAsync(teacherUrl);
-                responseTeachers.EnsureSuccessStatusCode();
-                var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
-                model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
+                    //Teachers
+                    var responseTeachers = await httpClient.GetAsync(teacherUrl);
+                    responseTeachers.EnsureSuccessStatusCode();
+                    var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
+                    model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
 
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-
-            return View(model);
         }
         public async Task<ActionResult> EditCourseGroup(int id)
         {
             var model = new AcademicOfferVM();
             try
             {
-                //Group
-                var newGroupUrl = groupUrl + id;
-                var responseGroup = await httpClient.GetAsync(newGroupUrl);
-                responseGroup.EnsureSuccessStatusCode();
-                var groupJson = await responseGroup.Content.ReadAsStringAsync();
-                model.Group = JsonSerializer.Deserialize<Group>(groupJson);
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    //Group
+                    var newGroupUrl = groupUrl + id;
+                    var responseGroup = await httpClient.GetAsync(newGroupUrl);
+                    responseGroup.EnsureSuccessStatusCode();
+                    var groupJson = await responseGroup.Content.ReadAsStringAsync();
+                    model.Group = JsonSerializer.Deserialize<Group>(groupJson);
 
-                //Teachers
-                var responseTeachers = await httpClient.GetAsync(teacherUrl);
-                responseTeachers.EnsureSuccessStatusCode();
-                var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
-                model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
+                    //Teachers
+                    var responseTeachers = await httpClient.GetAsync(teacherUrl);
+                    responseTeachers.EnsureSuccessStatusCode();
+                    var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
+                    model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
 
+                    return PartialView("_EditGroup", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return PartialView("_EditGroup", model);
         }
 
         // POST: GroupController/EditCourseGroup
@@ -161,8 +181,6 @@ namespace GestionAcademica.Web.Controllers
             var courseID = TempData["CourseID"] as int?;
             return RedirectToAction("CourseGroups", new { id = courseID });
         }
-
-
 
         // POST: GroupController/CreateCourseGroup
         [HttpPost]
@@ -189,21 +207,28 @@ namespace GestionAcademica.Web.Controllers
             var model = new AcademicOfferVM();
             try
             {
-                //CourseGroup
-                var newCourseGroupUrl = courseGroupsUrl + id;
-                var responseCourseGroup = await httpClient.GetAsync(newCourseGroupUrl);
-                responseCourseGroup.EnsureSuccessStatusCode();
-                var courseGroupJson = await responseCourseGroup.Content.ReadAsStringAsync();
-                model.CourseGroup = JsonSerializer.Deserialize<CourseGroups>(courseGroupJson);
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    //CourseGroup
+                    var newCourseGroupUrl = courseGroupsUrl + id;
+                    var responseCourseGroup = await httpClient.GetAsync(newCourseGroupUrl);
+                    responseCourseGroup.EnsureSuccessStatusCode();
+                    var courseGroupJson = await responseCourseGroup.Content.ReadAsStringAsync();
+                    model.CourseGroup = JsonSerializer.Deserialize<CourseGroups>(courseGroupJson);
 
-                
+                    return PartialView("_DeleteGroup", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return PartialView("_DeleteGroup", model);
         }
+
         // POST: GroupController/CreateCourseGroup
         [HttpPost]
         [ValidateAntiForgeryToken]
