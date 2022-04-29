@@ -1,4 +1,5 @@
 ﻿using GestionAcademica.Models;
+using GestionAcademica.Web.Helpers;
 using GestionAcademica.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,25 +28,34 @@ namespace GestionAcademica.Web.Controllers
             var model = new StudentVM();
             try
             {
-                //Students
-                var responseStudents = await httpClient.GetAsync(StudentUrl);
-                responseStudents.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
 
-                var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
-                model.StudentList = JsonSerializer.Deserialize<List<Student>>(jsonStudents);
+                    //Students
+                    var responseStudents = await httpClient.GetAsync(StudentUrl);
+                    responseStudents.EnsureSuccessStatusCode();
 
-                //Careers
-                var responseCareers = await httpClient.GetAsync(careerUrl);
-                responseCareers.EnsureSuccessStatusCode();
+                    var jsonStudents = await responseStudents.Content.ReadAsStringAsync();
+                    model.StudentList = JsonSerializer.Deserialize<List<Student>>(jsonStudents);
 
-                var jsonCareers = await responseCareers.Content.ReadAsStringAsync();
-                model.CareersList = JsonSerializer.Deserialize<List<Career>>(jsonCareers);
+                    //Careers
+                    var responseCareers = await httpClient.GetAsync(careerUrl);
+                    responseCareers.EnsureSuccessStatusCode();
+
+                    var jsonCareers = await responseCareers.Content.ReadAsStringAsync();
+                    model.CareersList = JsonSerializer.Deserialize<List<Career>>(jsonCareers);
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
+
             }
-            catch
+            catch (Exception ex)
             {
-
+                return RedirectToAction("Error", "Home", new { error = ex.Message });
             }
-            return View(model);
         }
         // POST: StudentController/Create
         [HttpPost]
@@ -70,17 +80,25 @@ namespace GestionAcademica.Web.Controllers
             Student model = new Student();
             try
             {
-                var responseStudent = await httpClient.GetAsync(StudentUrl + id.ToString());
-                responseStudent.EnsureSuccessStatusCode();
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
 
-                var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
-                model = JsonSerializer.Deserialize<Student>(jsonStudent);
+                    var responseStudent = await httpClient.GetAsync(StudentUrl + id.ToString());
+                    responseStudent.EnsureSuccessStatusCode();
+
+                    var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
+                    model = JsonSerializer.Deserialize<Student>(jsonStudent);
+                    return PartialView("_Edit", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return PartialView("_Edit", model);
         }
 
         // POST: StudentController/Edit/5
@@ -106,12 +124,26 @@ namespace GestionAcademica.Web.Controllers
         // GET: StudentController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var response = await httpClient.GetAsync(StudentUrl + id.ToString());
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                {
+                    var response = await httpClient.GetAsync(StudentUrl + id.ToString());
+                    response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            var model = JsonSerializer.Deserialize<Student>(json);
-            return PartialView("_Delete", model);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var model = JsonSerializer.Deserialize<Student>(json);
+                    return PartialView("_Delete", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
         }
 
         // POST: StudentController/Delete/5
@@ -136,7 +168,8 @@ namespace GestionAcademica.Web.Controllers
         public async Task<ActionResult> StudentGroups(int studentID)
         {
             StudentVM model = new StudentVM();
-            try
+
+            if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.MATRICULADOR }))
             {
                 //Student Groups
                 var url = enrollmentUrl + "GetStudentGroupsOfCurrentCycle/" + studentID;
@@ -151,12 +184,13 @@ namespace GestionAcademica.Web.Controllers
                 responseStudent.EnsureSuccessStatusCode();
                 var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
                 model.GroupStudent = new GroupStudents { Student = JsonSerializer.Deserialize<Student>(jsonStudent) };
-            }
-            catch
-            {
 
+                return View(model);
             }
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Login");
+            }
         }
 
         // GET: StudentController/AvailableGroups/5
@@ -165,29 +199,37 @@ namespace GestionAcademica.Web.Controllers
             StudentVM model = new StudentVM();
             try
             {
-                //Available Groups
-                var urlGroups = enrollmentUrl + "GetAvailableGroups/" + studentID;
-                var responseAvailableGroups = await httpClient.GetAsync(urlGroups);
-                responseAvailableGroups.EnsureSuccessStatusCode();
-                var jsonGroups = await responseAvailableGroups.Content.ReadAsStringAsync();
-                model.CourseGroupsList = JsonSerializer.Deserialize<List<CourseGroups>>(jsonGroups);
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.MATRICULADOR }))
+                {
+                    //Available Groups
+                    var urlGroups = enrollmentUrl + "GetAvailableGroups/" + studentID;
+                    var responseAvailableGroups = await httpClient.GetAsync(urlGroups);
+                    responseAvailableGroups.EnsureSuccessStatusCode();
+                    var jsonGroups = await responseAvailableGroups.Content.ReadAsStringAsync();
+                    model.CourseGroupsList = JsonSerializer.Deserialize<List<CourseGroups>>(jsonGroups);
 
-                //Student
-                var urlStudent = StudentUrl + studentID;
-                var responseStudent = await httpClient.GetAsync(urlStudent);
-                responseStudent.EnsureSuccessStatusCode();
-                var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
-                model.GroupStudent = new GroupStudents { Student = JsonSerializer.Deserialize<Student>(jsonStudent) };
+                    //Student
+                    var urlStudent = StudentUrl + studentID;
+                    var responseStudent = await httpClient.GetAsync(urlStudent);
+                    responseStudent.EnsureSuccessStatusCode();
+                    var jsonStudent = await responseStudent.Content.ReadAsStringAsync();
+                    model.GroupStudent = new GroupStudents { Student = JsonSerializer.Deserialize<Student>(jsonStudent) };
 
-                model.CourseGroupsDict = model.CourseGroupsList
-                    .GroupBy(item => item.Course.ID)
-                    .ToDictionary(group => model.CourseGroupsList.Where(item => item.Course.ID == group.Key).FirstOrDefault().Course, group => group.ToList());
+                    model.CourseGroupsDict = model.CourseGroupsList
+                        .GroupBy(item => item.Course.ID)
+                        .ToDictionary(group => model.CourseGroupsList.Where(item => item.Course.ID == group.Key).FirstOrDefault().Course, group => group.ToList());
+
+                    return PartialView("_AvailableCourses", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
             }
-            return PartialView("_AvailableCourses", model);
         }
 
 
@@ -218,20 +260,29 @@ namespace GestionAcademica.Web.Controllers
         public async Task<ActionResult> Unenroll(int idGroup, int idStudent)
         {
             StudentVM model = new StudentVM();
+
             try
             {
-                //GroupStudent
-                var url = groupStudentsUrl + "GetByStudentAndGroup/" + idStudent + "/" + idGroup;
-                var responseGroupStudent = await httpClient.GetAsync(url);
-                responseGroupStudent.EnsureSuccessStatusCode();
-                var groupStudentJson = await responseGroupStudent.Content.ReadAsStringAsync();
-                model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(groupStudentJson).FirstOrDefault();
-            }
-            catch
-            {
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.MATRICULADOR }))
+                {
+                    //GroupStudent
+                    var url = groupStudentsUrl + "GetByStudentAndGroup/" + idStudent + "/" + idGroup;
+                    var responseGroupStudent = await httpClient.GetAsync(url);
+                    responseGroupStudent.EnsureSuccessStatusCode();
+                    var groupStudentJson = await responseGroupStudent.Content.ReadAsStringAsync();
+                    model.GroupStudent = JsonSerializer.Deserialize<List<GroupStudents>>(groupStudentJson).FirstOrDefault();
 
+                    return PartialView("_Unenroll", model);
+                }
+                else
+                {
+                    return Json(new { url = Url.Action("Index", "Login") });
+                }
             }
-            return PartialView("_Unenroll", model);
+            catch (Exception ex)
+            {
+                return Json(new { url = Url.Action("Error", "Home", new { error = ex.Message }) });
+            }
         }
 
         // POST: StudentController/Unenroll/10/5
