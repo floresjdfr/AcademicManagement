@@ -35,6 +35,7 @@ namespace GestionAcademica.API.DataAccess
                 command.Parameters.Add(new SqlParameter("@Name", Teacher.Name));
                 command.Parameters.Add(new SqlParameter("@PhoneNumber", Teacher.PhoneNumber));
                 command.Parameters.Add(new SqlParameter("@Email", Teacher.Email));
+                command.Parameters.Add(new SqlParameter("@Fk_User", Teacher.User.ID));
 
                 var rowsAffected = await command.ExecuteNonQueryAsync();
 
@@ -96,6 +97,43 @@ namespace GestionAcademica.API.DataAccess
                     CommandType = CommandType.StoredProcedure
                 };
                 command.Parameters.Add(new SqlParameter("@Pk_Teacher", id));
+
+                var reader = await command.ExecuteReaderAsync();
+                if (reader.Read())
+                {
+                    response = (new Teacher
+                    {
+                        ID = reader.GetInt32("Pk_Teacher"),
+                        IdIdentidad = reader.GetString("ID"),
+                        Name = reader.GetString("Name"),
+                        PhoneNumber = reader.GetString("PhoneNumber"),
+                        Email = reader.GetString("Email")
+                    });
+                }
+                reader.Close();
+
+                Disconnect();
+                return response;
+            }
+            catch
+            {
+                Disconnect();
+                return null;
+            }
+        }
+        public async Task<Teacher> FindTeacherByUser(int id)
+        {
+            try
+            {
+                Teacher response = null;
+
+                Connect();
+
+                command = new SqlCommand(listTeachers, connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                command.Parameters.Add(new SqlParameter("@Fk_User", id));
 
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.Read())

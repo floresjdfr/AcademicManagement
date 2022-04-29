@@ -17,6 +17,7 @@ namespace GestionAcademica.API.Controllers
     {
         #region Variables
         private readonly TeacherService teacherService = new TeacherService();
+        private readonly UserService userService = new UserService();
         #endregion
 
         // GET: api/<TeacherController>
@@ -42,6 +43,17 @@ namespace GestionAcademica.API.Controllers
 
             return Ok(result);
         }
+        // GET api/<TeacherController>/5
+        [HttpGet("GetTeacherByUser/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetTeacherByUser(int id)
+        {
+            var result = await teacherService.FindTeacherByUser(id);
+            if (result == null) return NotFound();
+
+            return Ok(result);
+        }
 
         // GET api/<TeacherController>/GetTeacherGroups/1/11
         [HttpGet("GetTeacherGroups/{teacherID}/{courseID}")]
@@ -53,7 +65,7 @@ namespace GestionAcademica.API.Controllers
             {
                 var result = await teacherService.FindTeacherGroups(teacherID);//Current cycle is default = 1
                 if (result == null) throw new Exception();
-                
+
                 var groupedResult = result
                     .GroupBy(item => item.Course.ID)
                     .ToDictionary(group => group.Key, group => group.Select(item => item.Group).ToList());
@@ -99,6 +111,19 @@ namespace GestionAcademica.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Post([FromBody] Teacher value)
         {
+            User studentUser = new User
+            {
+                UserID = value.IdIdentidad,
+                Password = value.User.Password,
+                UserType = new UserType
+                {
+                    ID = (int)EnumUserType.Profesor
+                }
+            };
+            var resultUser = await userService.InsertUser(studentUser);
+            if (resultUser)
+                value.User = await userService.FindUser(new User { UserID = studentUser.UserID });
+
             var result = await teacherService.InsertTeacher(value);
             if (result == false) return BadRequest();
 
@@ -111,11 +136,35 @@ namespace GestionAcademica.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Put(int id, [FromBody] Teacher value)
         {
-            if (id != value.ID) return BadRequest();
-            var result = await teacherService.UpdateTeacher(id, value);
-            if (result == false) return BadRequest();
+            try
+            {
+                if (id != value.ID) throw new Exception();
 
-            return Ok(result);
+                //Update User
+                User user = new User
+                {
+                    UserID = value.IdIdentidad
+                };
+                var userFound = await userService.FindUser(user);
+                if (userFound == null) throw new Exception();
+
+                userFound.UserType = null;
+                userFound.Password = value.User.Password;
+
+                var resultUpdatePassword = await userService.UpdateUser(userFound.ID.Value, userFound);
+                if (!resultUpdatePassword) throw new Exception();
+
+                //Update Teacher
+                var result = await teacherService.UpdateTeacher(id, value);
+                if (result == false) throw new Exception();
+
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
 
         // DELETE api/<TeacherController>/5

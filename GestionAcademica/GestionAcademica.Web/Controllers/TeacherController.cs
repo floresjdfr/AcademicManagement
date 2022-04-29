@@ -166,14 +166,14 @@ namespace GestionAcademica.Web.Controllers
                     var user = HttpContext.Session.GetObjectFromJson<User>("User");
 
                     //Teacher
-                    var newTeacherUrl = teacherUrl + user.ID;
+                    var newTeacherUrl = teacherUrl + "GetTeacherByUser/" + user.ID;
                     var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
                     responseTeacher.EnsureSuccessStatusCode();
                     var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
                     model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
 
                     //Courses
-                    var teacherCoursesUrl = teacherUrl + "GetTeacherCourses/" + user.ID;
+                    var teacherCoursesUrl = teacherUrl + "GetTeacherCourses/" + model.Teacher.ID;
                     var responseCourses = await httpClient.GetAsync(teacherCoursesUrl);
                     responseCourses.EnsureSuccessStatusCode();
                     var jsonCourses = await responseCourses.Content.ReadAsStringAsync();
@@ -202,14 +202,14 @@ namespace GestionAcademica.Web.Controllers
                     var user = HttpContext.Session.GetObjectFromJson<User>("User");
 
                     //Teacher
-                    var newTeacherUrl = teacherUrl + user.ID;
+                    var newTeacherUrl = teacherUrl + "GetTeacherByUser/" + user.ID;
                     var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
                     responseTeacher.EnsureSuccessStatusCode();
                     var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
                     model.Teacher = JsonSerializer.Deserialize<Teacher>(jsonTeacher);
 
                     //Groups
-                    var teacherGroupsUrl = teacherUrl + "GetTeacherGroups/" + user.ID + "/" + courseID;
+                    var teacherGroupsUrl = teacherUrl + "GetTeacherGroups/" + model.Teacher.ID + "/" + courseID;
                     var responseGroups = await httpClient.GetAsync(teacherGroupsUrl);
                     responseGroups.EnsureSuccessStatusCode();
                     var jsonGroups = await responseGroups.Content.ReadAsStringAsync();
@@ -238,7 +238,7 @@ namespace GestionAcademica.Web.Controllers
                     var user = HttpContext.Session.GetObjectFromJson<User>("User");
 
                     //Teacher
-                    var newTeacherUrl = teacherUrl + user.ID;
+                    var newTeacherUrl = teacherUrl + "GetTeacherByUser/" + user.ID;
                     var responseTeacher = await httpClient.GetAsync(newTeacherUrl);
                     responseTeacher.EnsureSuccessStatusCode();
                     var jsonTeacher = await responseTeacher.Content.ReadAsStringAsync();
@@ -308,7 +308,7 @@ namespace GestionAcademica.Web.Controllers
                 var responseGroupStudent = await httpClient.PutAsync(studentsUrl, content);
                 responseGroupStudent.EnsureSuccessStatusCode();
             }
-            catch (Exception ex)
+            catch
             {
 
             }

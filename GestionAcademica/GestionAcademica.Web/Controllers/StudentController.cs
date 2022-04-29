@@ -28,7 +28,7 @@ namespace GestionAcademica.Web.Controllers
             var model = new StudentVM();
             try
             {
-                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR }))
+                if (RolesHelper.IsAuthorized(HttpContext, new ERole[] { ERole.ADMINISTRADOR, ERole.MATRICULADOR }))
                 {
 
                     //Students

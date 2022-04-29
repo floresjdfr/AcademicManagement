@@ -182,21 +182,23 @@ namespace GestionAcademica.Web.Controllers
             }
         }
 
-        //public async Task<ActionResult> AddNewCourse(CareerVM model)
-        //{
-        //    try
-        //    {
-        //        model.CareerCourse.Career = model.Career;
-        //        var careerCourseJson = JsonSerializer.Serialize(model.CareerCourse);
-        //        var requestContent = new StringContent(careerCourseJson, Encoding.UTF8, "application/json");
-        //        var response = await httpClient.PostAsync(careerCoursesUrl, requestContent);
-        //        response.EnsureSuccessStatusCode();
-        //        return RedirectToAction("Details", new { id = model.CareerCourse.Career.ID });
-        //    }
-        //    catch
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddNewCourse(CareerVM model)
+        {
+            try
+            {
+                model.CareerCourse.Career = model.Career;
+                var careerCourseJson = JsonSerializer.Serialize(model.CareerCourse);
+                var requestContent = new StringContent(careerCourseJson, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync(careerCoursesUrl, requestContent);
+                response.EnsureSuccessStatusCode();
+                return RedirectToAction("Details", new { id = model.CareerCourse.Career.ID });
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 --INSERT
-CREATE OR ALTER PROCEDURE udpInsertTeacher(@ID AS INT, @Name as VARCHAR(50), @PhoneNumber as VARCHAR(50), @Email AS VARCHAR(50))
+CREATE OR ALTER PROCEDURE udpInsertTeacher(@Fk_User AS INT, @ID AS VARCHAR(50), @Name AS VARCHAR(50), @PhoneNumber AS VARCHAR(50), @Email AS VARCHAR(50))
 AS
 BEGIN
-    INSERT INTO [dbo].Teacher(ID, Name, PhoneNumber, Email) VALUES (@ID, @Name, @PhoneNumber, @Email);
+    INSERT INTO [dbo].Teacher(Fk_User, ID, Name, PhoneNumber, Email) VALUES (@Fk_User, @ID, @Name, @PhoneNumber, @Email);
 END
 
 --UPDATE
@@ -27,7 +27,7 @@ BEGIN
 END
 
 --SEARCH
-CREATE OR ALTER PROCEDURE udpFindTeacher(@Pk_Teacher AS INT = NULL, @ID AS VARCHAR(50) = NULL, @Name AS VARCHAR(50) = NULL, @PhoneNumber AS VARCHAR(50) = NULL, @Email AS VARCHAR(50) = NULL)
+CREATE OR ALTER PROCEDURE udpFindTeacher(@Pk_Teacher AS INT = NULL, @ID AS VARCHAR(50) = NULL, @Name AS VARCHAR(50) = NULL, @PhoneNumber AS VARCHAR(50) = NULL, @Email AS VARCHAR(50) = NULL, @Fk_User AS INT = NULL)
 AS
 BEGIN
     SELECT  *
@@ -37,6 +37,7 @@ BEGIN
             AND (@Name IS NULL OR Name = @Name)
             AND (@PhoneNumber IS NULL OR PhoneNumber = @PhoneNumber)
             AND (@Email IS NULL OR Email = @Email)
+            AND (@Fk_User IS NULL OR Fk_User = @Fk_User)
 END
 
 --DELETE

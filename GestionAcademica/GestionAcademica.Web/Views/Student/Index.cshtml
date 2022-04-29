@@ -1,12 +1,19 @@
 ﻿@model GestionAcademica.Web.ViewModels.StudentVM
+@using GestionAcademica.Web.Helpers
+
 @{
     ViewData["Title"] = "Estudiantes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<p class="text-right">
-    <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-primary">Agregar Nuevo Estudiante</a>
-</p>
+
+@if (RolesHelper.IsAuthorized(Context, new ERole[] { ERole.ADMINISTRADOR }))
+{
+    <p class="text-right">
+        <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-primary">Agregar Nuevo Estudiante</a>
+    </p>
+}
+
 
 <h1>Estudiantes</h1>
 <table class="table">
@@ -63,9 +70,15 @@
                     }
                 </td>
                 <td>
-                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
-                    @Html.ActionLink("Matricular", "StudentGroups", new { studentID = item.ID }) |
-                    <a href="javascript:;" onclick="deleteStudent(@item.ID)">Eliminar</a>
+                    @if (RolesHelper.IsAuthorized(Context, new ERole[] { ERole.ADMINISTRADOR }))
+                    {
+                        <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> <p style="display:inline-block; margin:0;">|</p>
+                        <a href="javascript:;" onclick="deleteStudent(@item.ID)">Eliminar</a>
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Matricular", "StudentGroups", new { studentID = item.ID })
+                    }
                 </td>
             </tr>
         }
