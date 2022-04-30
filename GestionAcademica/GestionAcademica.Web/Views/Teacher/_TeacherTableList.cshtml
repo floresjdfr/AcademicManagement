@@ -1,0 +1,53 @@
+﻿@model GestionAcademica.Web.ViewModels.TeacherVM
+
+
+<table class="table table-striped" id="table-teachers">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher.IdIdentidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher.Email)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.TeacherList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdIdentidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
+                    <a href="javascript:;" onclick="deleteTeacher(@item.ID)">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    if (!$.fn.DataTable.isDataTable('.table')) {
+        $(".table").DataTable({
+            "dom": 'rtip'
+        });
+    }
+</script>

@@ -34,6 +34,7 @@ namespace GestionAcademica.Web.Controllers
 
                     var json = await response.Content.ReadAsStringAsync();
                     model.TeacherList = JsonSerializer.Deserialize<List<Teacher>>(json);
+                    HttpContext.Session.SetObjectAsJson("TeacherList", model.TeacherList);
                     return View(model);
                 }
                 else
@@ -45,6 +46,28 @@ namespace GestionAcademica.Web.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction("Error", "Home", new { error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Filter(TeacherVM model)
+        {
+            try
+            {
+                model.TeacherList = HttpContext.Session.GetObjectFromJson<List<Teacher>>("TeacherList");
+                if (model.TeacherList == null) throw new Exception();
+
+                if (!string.IsNullOrEmpty(model.Teacher.IdIdentidad))
+                    model.TeacherList = model.TeacherList.Where(item => item.IdIdentidad.Contains(model.Teacher.IdIdentidad, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (!string.IsNullOrEmpty(model.Teacher.Name))
+                    model.TeacherList = model.TeacherList.Where(item => item.Name.Contains(model.Teacher.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                return Json(new { isValid = true, html = RazorHelper.RenderRazorViewToString(this, "_TeacherTableList", model) });
+            }
+            catch
+            {
+                return Json(new { isValid = false, url = Url.Action("Index") });
             }
         }
 
