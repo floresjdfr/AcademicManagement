@@ -1,0 +1,47 @@
+﻿@model GestionAcademica.Web.ViewModels.CareerVM
+
+<table class="table table-striped" id="table-career">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Career.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Career.CareerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Career.DegreeName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListCareer)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CareerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DegreeName)
+                </td>
+                <td>
+                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
+                    @Html.ActionLink("Ver Cursos", "Details", new { id = item.ID }) |
+                    <a href="javascript:;" onclick="deleteCareer(@item.ID)">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    if (!$.fn.DataTable.isDataTable('.table')) {
+        $(".table").DataTable({
+            "dom": 'rtip'
+        });
+    }
+</script>

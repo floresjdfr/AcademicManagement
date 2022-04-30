@@ -1,51 +1,41 @@
 ﻿@model GestionAcademica.Web.ViewModels.CareerVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Carreras";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Carreras</h1>
-<p class="text-right">
+
+
+<br />
+<div class="jumbotron p-5">
+    <h3>Filtros</h3>
+    <form asp-action="Filter" id="formFilter">
+        <div class="form-row align-items-end">
+            <div class="col">
+                <label asp-for="Career.Code"></label>
+                <input asp-for="Career.Code" class="form-control" />
+            </div>
+            <div class="col">
+                <label asp-for="Career.CareerName"></label>
+                <input asp-for="Career.CareerName" class="form-control" />
+            </div>
+            <div class=" col-1">
+                <input type="submit" value="Filtrar" class="btn btn-outline-dark" />
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+
+<div class="d-flex justify-content-between mb-3">
+    <h3>Lista de Carreras</h3>
     <a data-target="#addNewCareerModal" data-toggle="modal" href="#addNewCareerModal" class="btn btn-outline-dark">Crear Nueva Carrera</a>
-</p>
-<table class="table table-striped" id="table-career">
-    <thead class="table-dark">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Career.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Career.CareerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Career.DegreeName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListCareer)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CareerName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DegreeName)
-                </td>
-                <td>
-                    <a href="javascript:;" onclick="edit(@item.ID)">Editar</a> |
-                    @Html.ActionLink("Ver Cursos", "Details", new { id = item.ID }) |
-                    <a href="javascript:;" onclick="deleteCareer(@item.ID)">Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+</div>
+<div id="items">
+    <partial name="_CareerListTable" />
+</div>
+
 
 <partial name="_Create" />
 
@@ -54,6 +44,22 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#table-career').DataTable();
+
+        $("#formFilter").submit(function (e) {
+            e.preventDefault();
+            var formData = $("#formFilter").serialize();
+            $.ajax({
+                url: "/Career/Filter",
+                method: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.isValid)
+                        $("#items").html(response.html);
+                    else
+                        window.location.href = response.url
+                }
+            });
+        });
     })
     function edit(id) {
         $.ajax({

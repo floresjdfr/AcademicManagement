@@ -33,6 +33,7 @@ namespace GestionAcademica.Web.Controllers
 
                     var json = await response.Content.ReadAsStringAsync();
                     model.ListCareer = JsonSerializer.Deserialize<List<Career>>(json);
+                    HttpContext.Session.SetObjectAsJson("ListCareer", model.ListCareer);
                     return View(model);
                 }
                 else
@@ -44,6 +45,28 @@ namespace GestionAcademica.Web.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction("Error", "Home", new { error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Filter(CareerVM model)
+        {
+            try
+            {
+                model.ListCareer = HttpContext.Session.GetObjectFromJson<List<Career>>("ListCareer");
+                if (model.ListCareer == null) throw new Exception();
+
+                if (!string.IsNullOrEmpty(model.Career.Code))
+                    model.ListCareer = model.ListCareer.Where(item => item.Code.Contains(model.Career.Code, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (!string.IsNullOrEmpty(model.Career.CareerName))
+                    model.ListCareer = model.ListCareer.Where(item => item.CareerName.Contains(model.Career.CareerName, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                return Json(new { isValid = true, html = RazorHelper.RenderRazorViewToString(this, "_CareerListTable", model) });
+            }
+            catch
+            {
+                return Json(new { isValid = false, url = Url.Action("Index") });
             }
         }
 
@@ -68,18 +91,40 @@ namespace GestionAcademica.Web.Controllers
                     var jsonCareerCourses = await responseCareerCourses.Content.ReadAsStringAsync();
                     model.ListCareerCourses = JsonSerializer.Deserialize<List<CareerCourses>>(jsonCareerCourses);
 
+                    HttpContext.Session.SetObjectAsJson("ListCareerCourses", model.ListCareerCourses);
+
                     return View(model);
                 }
                 else
                 {
                     return RedirectToAction("Index", "Login");
                 }
-
-
             }
             catch (Exception ex)
             {
                 return RedirectToAction("Error", "Home", new { error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult FilterGroups(CareerVM model)
+        {
+            try
+            {
+                model.ListCareerCourses = HttpContext.Session.GetObjectFromJson<List<CareerCourses>>("ListCareerCourses");
+                if (model.ListCareerCourses == null) throw new Exception();
+
+                if (!string.IsNullOrEmpty(model.Course.Code))
+                    model.ListCareerCourses = model.ListCareerCourses.Where(item => item.Course.Code.Contains(model.Course.Code, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (!string.IsNullOrEmpty(model.Course.Name))
+                    model.ListCareerCourses = model.ListCareerCourses.Where(item => item.Course.Name.Contains(model.Course.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                return Json(new { isValid = true, html = RazorHelper.RenderRazorViewToString(this, "_CareerCoursesList", model) });
+            }
+            catch
+            {
+                return Json(new { isValid = false, url = Url.Action("Index") });
             }
         }
 

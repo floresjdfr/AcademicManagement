@@ -29,11 +29,30 @@
     </dl>
 </div>
 <hr />
+<div class="jumbotron p-5">
+    <h3>Filtros</h3>
+    <form asp-action="FilterGroups" id="formFilter">
+        <div class="form-row align-items-end">
+            <div class="col">
+                <label asp-for="Course.Code"></label>
+                <input asp-for="Course.Code" class="form-control" />
+            </div>
+            <div class="col">
+                <label asp-for="Course.Name"></label>
+                <input asp-for="Course.Name" class="form-control" />
+            </div>
+            <div class=" col-1">
+                <input type="submit" value="Filtrar" class="btn btn-outline-dark" />
+            </div>
+        </div>
+    </form>
+</div>
 
-<p class="text-right">
+<div class="d-flex justify-content-between mb-3">
+    <h4>Lista de Cursos</h4>
     <a data-toggle="modal" data-target="#addNewCourseModal" class="btn btn-outline-dark" href="#addNewCourseModal">Agregar Nuevo Curso</a>
-</p>
-<div>
+</div>
+<div id="items">
     <partial name="_CareerCoursesList" />
 </div>
 <hr />
@@ -103,3 +122,23 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#formFilter").submit(function (e) {
+            e.preventDefault();
+            var formData = $("#formFilter").serialize();
+            $.ajax({
+                url: "/Career/FilterGroups",
+                method: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.isValid)
+                        $("#items").html(response.html);
+                    else
+                        window.location.href = response.url
+                }
+            });
+        });
+    });
+</script>

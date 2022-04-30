@@ -118,14 +118,7 @@
 
 
 
-    <script>
-        if (!$.fn.DataTable.isDataTable('.table')) {
-            $(".table").DataTable({
-                searching: false
-            });
-        }
 
-    </script>
 
     @RenderSection("Scripts", required: false)
 </body>
@@ -141,3 +134,13 @@
         height: 100%;
     }
 </style>
+
+<script>
+
+    if (!$.fn.DataTable.isDataTable('.table')) {
+        $(".table").DataTable({
+            "dom": 'rtip'
+        });
+    }
+
+</script>

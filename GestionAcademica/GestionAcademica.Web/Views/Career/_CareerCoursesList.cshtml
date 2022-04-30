@@ -1,6 +1,5 @@
 ﻿@model GestionAcademica.Web.ViewModels.CareerVM
 
-<h4>Lista de Cursos</h4>
 <table class="table table-striped" id="table-courses">
     <thead class="table-dark">
         <tr>
@@ -59,9 +58,11 @@
 <div id="partial"></div>
 
 <script>
-    $(document).ready(function () {
-        $("#table-courses").DataTable();
-    });
+    if (!$.fn.DataTable.isDataTable('.table')) {
+        $(".table").DataTable({
+            "dom": 'rtip'
+        });
+    }
     function deleteCareerCourse(id) {
         $.ajax({
             url: '/CareerCourses/Delete',
