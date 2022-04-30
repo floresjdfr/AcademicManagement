@@ -5,14 +5,12 @@
         <div class="modal-content">
             <form asp-action="Delete">
                 <div class="modal-header">
-                    <h5 class="modal-title">Eliminar Estudiante</h5>
+                    <h5 class="modal-title">¿Esta seguro/a que desea eliminar el siguiente estudiante?</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <h5>¿Esta seguro/a que desea eliminar el siguiente ciclo?</h5>
-                    <hr />
                     <dl class="row">
                         <dt class="col-sm-2">
                             @Html.DisplayNameFor(model => model.IdStudent)
@@ -54,8 +52,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <input type="submit" value="Eliminar" class="btn btn-danger" asp-route-id="@Model.ID" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" value="Eliminar" class="btn btn-outline-dark" asp-route-id="@Model.ID" />
                     </div>
                 </div>
             </form>

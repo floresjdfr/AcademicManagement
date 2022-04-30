@@ -334,7 +334,7 @@ namespace GestionAcademica.Web.Controllers
                     var activeCycle = model.CyclesList.Where(item => item.CycleState.ID == 1).FirstOrDefault();
                     model.Cycle = activeCycle;
 
-                    var getAcademicHistoryUrl = StudentUrl + "GetStudentAcademicHistory/" + model.Student.ID + "/" + activeCycle.ID;
+                    var getAcademicHistoryUrl = StudentUrl + "GetStudentAcademicHistory/" + model.Student.ID + (activeCycle != null ? "/" + activeCycle.ID : "");
                     var responseAcademicHistory = await httpClient.GetAsync(getAcademicHistoryUrl);
                     responseAcademicHistory.EnsureSuccessStatusCode();
                     var jsonAcademicHistory = await responseAcademicHistory.Content.ReadAsStringAsync();

@@ -17,7 +17,18 @@ CREATE OR ALTER PROCEDURE udpModifyCycle(
 )
 AS
 BEGIN
-	
+	IF (@Fk_CycleState = 1)
+	BEGIN 
+		DECLARE @activeCycles AS INT;
+		SET @activeCycles = (select COUNT(*) from [Cycle] c where c.Fk_CycleState = 1);
+		
+		IF(@activeCycles > 0)
+		BEGIN
+			DECLARE @pkCycle AS INT;
+			SET @pkCycle = (select c.Pk_Cycle from [Cycle] c where c.Fk_CycleState = 1);
+			UPDATE [Cycle] SET Fk_CycleState = 2 WHERE Pk_Cycle = @pkCycle;
+		END
+	END
 	UPDATE [dbo].[Cycle] 
 	SET 
 		Fk_CycleState = @Fk_CycleState,
@@ -26,7 +37,6 @@ BEGIN
 		StartDate = @StartDate,
 		EndDate = @EndDate 
 	WHERE Pk_Cycle  = @Pk_Cycle;
-	
 END
 
 --SEARCH

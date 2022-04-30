@@ -1,7 +1,7 @@
 ﻿@model GestionAcademica.Web.ViewModels.StudentVM
 
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>@Html.DisplayNameFor(model => model.GroupStudent.Group.Course.Name)</th>
             <th>@Html.DisplayNameFor(model => model.GroupStudent.Group.Cycle.Number)</th>
@@ -27,5 +27,10 @@
 </table>
 
 <script>
-    $(".table").DataTable();
+    if (!$.fn.DataTable.isDataTable('.table')) {
+        $(".table").DataTable({
+            searching: false
+        });
+    }
+    
 </script>

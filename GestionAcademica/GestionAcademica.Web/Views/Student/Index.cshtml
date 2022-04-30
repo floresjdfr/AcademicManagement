@@ -10,14 +10,14 @@
 @if (RolesHelper.IsAuthorized(Context, new ERole[] { ERole.ADMINISTRADOR }))
 {
     <p class="text-right">
-        <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-primary">Agregar Nuevo Estudiante</a>
+        <a data-target="#addNewStudentModal" data-toggle="modal" href="#addNewStudentModal" class="btn btn-outline-dark">Agregar Nuevo Estudiante</a>
     </p>
 }
 
 
 <h1>Estudiantes</h1>
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Student.IdStudent)

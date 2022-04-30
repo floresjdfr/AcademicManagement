@@ -3,7 +3,7 @@
 <div class="modal fade" id="addNewGroupModal" tabindex="-1" aria-labelledby="addNewGroupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-action="CreateCourseGroup">
+            <form asp-action="CreateCourseGroup" id="formCreateGroup">
                 <div class="modal-header">
                     <h5 class="modal-title">Agregar Nuevo Grupo</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -29,17 +29,37 @@
                         </select>
                         <span asp-validation-for="CourseGroup.Group.Teacher.ID" class="text-danger"></span>
                     </div>
-                    <input type="hidden" asp-for="CourseGroup.Course.ID"/>
+                    <input type="hidden" asp-for="CourseGroup.Course.ID" />
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar Grupo</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-outline-dark">Guardar Grupo</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    $(document).ready(function () {
+        $("#formCreateGroup").submit(function (e) {
+            e.preventDefault();
+            var formData = $("#formCreateGroup").serialize();
+            $.ajax({
+                url: "/AcademicOffer/CreateCourseGroup",
+                method: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.isValid) {
+                        window.location.href = response.url;
+                    }
+                    else {
+                        $(".modal-backdrop").remove();
+                        $("#createModal").html(response.html);
+                        $("#addNewGroupModal").modal("toggle");
+                    }
+                }
+            });
+        });
+    });
+</script>

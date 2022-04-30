@@ -8,8 +8,8 @@
 <h3>Lista de Estudiantes</h3>
 
 
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.GroupStudent.Student.IdStudent)
@@ -62,7 +62,7 @@
                     }
                 </td>
                 <td>
-                    <button class="btn btn-outline-primary" onclick="editScore(@item.ID)">Calificar Estudiante</button>
+                    <button class="btn btn-outline-dark" onclick="editScore(@item.ID)">Calificar Estudiante</button>
                 </td>
             </tr>
         }

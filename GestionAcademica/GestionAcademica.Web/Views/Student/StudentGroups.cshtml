@@ -19,11 +19,11 @@
     <dd class="col-sm-10">@Html.DisplayFor(model => model.GroupStudent.Student.Career.CareerName)</dd>
 </dl>
 
-<p class="text-right"><button class="btn btn-outline-primary" onclick="showGroups(@Model.GroupStudent.Student.ID)">Matricular Curso</button></p>
+<p class="text-right"><button class="btn btn-outline-dark" onclick="showGroups(@Model.GroupStudent.Student.ID)">Matricular Curso</button></p>
 
 <h3>Cursos Matriculados</h3>
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Name)</th>
             <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Credits)</th>
@@ -47,7 +47,7 @@
                     <td>@Html.DisplayFor(model => item.Group.Schedule)</td>
                     <td>@Html.DisplayFor(model => item.Group.Teacher.Name)</td>
                     <td>
-                        <button onclick="showUnenroll(@item.Group.ID, @Model.GroupStudent.Student.ID)">Desmatricular</button>
+                        <button class="btn btn-outline-dark" onclick="showUnenroll(@item.Group.ID, @Model.GroupStudent.Student.ID)">Desmatricular</button>
                     </td>
                 </tr>
             }

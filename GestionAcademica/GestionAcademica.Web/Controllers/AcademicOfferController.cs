@@ -187,19 +187,45 @@ namespace GestionAcademica.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateCourseGroup(AcademicOfferVM model)
         {
-            try
-            {
-                var jsonText = JsonSerializer.Serialize(model.CourseGroup);
-                var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync(courseGroupsUrl, content);
+            HttpResponseMessage response = null;
+            var courseID = TempData["CourseID"] as int?;
+            TempData["CourseID"] = courseID;
 
-                var courseID = TempData["CourseID"] as int?;
-                return RedirectToAction("CourseGroups", new { id = courseID });
-            }
-            catch
+            if (ModelState.IsValid)
             {
-                return View();
+                try
+                {
+                    var jsonText = JsonSerializer.Serialize(model.CourseGroup);
+                    var content = new StringContent(jsonText, Encoding.UTF8, "application/json");
+                    response = await httpClient.PostAsync(courseGroupsUrl, content);
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (HttpRequestException)
+                {
+                    var jsonError = await response.Content.ReadAsStringAsync();
+                    var error = JsonSerializer.Deserialize<Error>(jsonError);
+                    TempData["Error"] = error.ErrorMessage;
+                }
+                catch
+                {
+                    TempData["Error"] = "An unexpected error has ocurred.";
+                }
+                return Json(new { isValid = true, url = Url.Action("CourseGroups", new { id = courseID }) });
             }
+            //Teachers
+            var responseTeachers = await httpClient.GetAsync(teacherUrl);
+            responseTeachers.EnsureSuccessStatusCode();
+            var jsonTeachers = await responseTeachers.Content.ReadAsStringAsync();
+            model.TeachersList = JsonSerializer.Deserialize<List<Teacher>>(jsonTeachers);
+
+            //Course
+            var newCourseUrl = courseUrl + courseID;
+            var responseCourse = await httpClient.GetAsync(newCourseUrl);
+            responseCourse.EnsureSuccessStatusCode();
+            var courseJson = await responseCourse.Content.ReadAsStringAsync();
+            model.CourseGroup = new CourseGroups { Course = JsonSerializer.Deserialize<Course>(courseJson) };
+
+            return Json(new { isValid = false, html = RazorHelper.RenderRazorViewToString(this, "_CreateGroup", model) });
         }
 
         public async Task<ActionResult> DeleteCourseGroup(int id)

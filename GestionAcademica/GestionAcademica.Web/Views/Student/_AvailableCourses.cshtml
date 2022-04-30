@@ -12,8 +12,8 @@
             </div>
             <div class="modal-body">
 
-                <table class="table">
-                    <thead>
+                <table class="table table-striped">
+                    <thead class="table-dark">
                         <tr>
                             <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Code)</th>
                             <th>@Html.DisplayNameFor(model => model.CourseGroup.Course.Name)</th>
@@ -34,13 +34,13 @@
                                     <td>@Html.DisplayFor(_ => key.Name)</td>
                                     <td>@Html.DisplayFor(_ => key.Credits)</td>
                                     <td>@Html.DisplayFor(_ => key.WeeklyHours)</td>
-                                    <td><button type="button" data-toggle="collapse" data-target="#Target-@key.ID" aria-expanded="false" aria-controls="Target-@key.ID">Ver Grupos</button></td>
+                                    <td><button class="btn btn-outline-dark" type="button" data-toggle="collapse" data-target="#Target-@key.ID" aria-expanded="false" aria-controls="Target-@key.ID">Ver Grupos</button></td>
                                 </tr>
                                 <!--Groups-->
                                 <tr>
                                     <td colspan="5">
                                         <div class="collapse" id="Target-@key.ID">
-                                            <table class="table">
+                                            <table class="table table-light">
                                                 <thead>
                                                     <tr>
                                                         <th>@Html.DisplayNameFor(model => model.CourseGroup.Group.Number)</th>
@@ -59,7 +59,7 @@
                                                             <td>
                                                                 <form asp-action="EnrollGroup" asp-route-groupID="@courseGroup.Group.ID">
                                                                     <input type="hidden" asp-for="GroupStudent.Student.ID" />
-                                                                    <input type="submit" value="Matricular Grupo" />
+                                                                    <input class="btn btn-outline-dark" type="submit" value="Matricular Grupo" />
                                                                 </form>
                                                             </td>
                                                         </tr>

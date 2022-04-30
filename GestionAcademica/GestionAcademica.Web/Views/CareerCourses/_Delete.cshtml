@@ -1,19 +1,16 @@
 ﻿@model GestionAcademica.Models.CareerCourses
-
 <!-- Modal -->
 <div class="modal fade" id="eliminarCareerCourseModal" tabindex="-1" aria-labelledby="eliminarCareerCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form asp-action="Delete">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="eliminarCareerCourseModalLabel">Eliminar Curso de Carrera</h5>
+                    <h5 class="modal-title" id="eliminarCareerCourseModalLabel">¿Esta seguro/a que desea eliminar el siguiente curso?</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <h4>¿Esta seguro/a que desea eliminar el siguiente curso?</h4>
-                    <hr />
                     <dl class="row">
                         <dt class="col-sm-4">
                             @Html.DisplayNameFor(model => model.Course.Code)
@@ -55,9 +52,9 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <input type="hidden" asp-for="Career.ID"/>
-                        <input type="submit" value="Eliminar" class="btn btn-danger" asp-route-id="@Model.ID" />
+                        <input type="hidden" asp-for="Career.ID" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" value="Eliminar" class="btn btn-outline-dark" asp-route-id="@Model.ID" />
                     </div>
                 </div>
             </form>

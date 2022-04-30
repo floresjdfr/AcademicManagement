@@ -8,10 +8,10 @@
 <h1>Usuarios</h1>
 
 <p class="text-right">
-    <a data-target="#addNewUserModal" data-toggle="modal" href="#addNewUserModal" class="btn btn-primary">Agregar Nuevo Usuario</a>
+    <a data-target="#addNewUserModal" data-toggle="modal" href="#addNewUserModal" class="btn btn-outline-dark">Agregar Nuevo Usuario</a>
 </p>
-<table class="table" id="table-user">
-    <thead>
+<table class="table table-striped" id="table-user">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.User.UserID)

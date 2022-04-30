@@ -1,4 +1,6 @@
 ﻿@model GestionAcademica.Web.ViewModels.AcademicOfferVM
+@using GestionAcademica.Models
+
 @{
     ViewData["Title"] = "Grupos";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,11 +8,23 @@
 
 <h1>Grupos</h1>
 <p class="text-right">
-    <a data-target="#addNewGroupModal" data-toggle="modal" href="#addNewGroupModal" class="btn btn-primary">Agregar Nuevo Grupo</a>
+    <a data-target="#addNewGroupModal" data-toggle="modal" href="#addNewGroupModal" class="btn btn-outline-dark">Agregar Nuevo Grupo</a>
 </p>
 
-<table class="table">
-    <thead>
+<hr />
+@if (TempData["Error"] != null)
+{
+    var error = TempData["Error"] as string;
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> @error
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Group.Number)
@@ -58,9 +72,16 @@
     </tbody>
 </table>
 
+
+
 <div id="partials"></div>
 
-<partial name="_CreateGroup"/>
+<div id="createModal">
+    <partial name="_CreateGroup" />
+</div>
+
+
+
 
 <script>
     function edit(id) {

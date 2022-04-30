@@ -6,8 +6,8 @@
 }
 
 <h3>Lista de Grupos</h3>
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Group.Number)
@@ -28,7 +28,7 @@
                 @Html.DisplayFor(modelItem => item.Schedule)
             </td>
             <td>
-                @Html.ActionLink("Ver Estudiantes", "Students", "Teacher", new { groupID = item.ID }, new { @class = "btn btn-outline-primary" })
+                @Html.ActionLink("Ver Estudiantes", "Students", "Teacher", new { groupID = item.ID }, new { @class = "btn btn-outline-dark" })
             </td>
         </tr>
 }

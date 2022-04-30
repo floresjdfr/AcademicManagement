@@ -1,7 +1,7 @@
 ﻿@model GestionAcademica.Web.ViewModels.AcademicOfferVM
 
-<table class="table">
-    <thead>
+<table class="table table-striped">
+    <thead class="table-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.CareerCourse.Course.Code)
@@ -43,5 +43,5 @@
 </table>
 
 <script>
-    $('.table').DataTable();
+    $('.table').DataTable({searching: false});
 </script>
