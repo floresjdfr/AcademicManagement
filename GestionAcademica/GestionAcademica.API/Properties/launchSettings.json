@@ -2,9 +2,13 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://192.168.100.22:45061",
+    "iis": {
+      "applicationUrl": "http://localhost:16206",
       "sslPort": 0
+    },
+    "iisExpress": {
+      "applicationUrl": "http://localhost:45061",
+      "sslPort": 44330
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -20,7 +24,7 @@
     "API": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
